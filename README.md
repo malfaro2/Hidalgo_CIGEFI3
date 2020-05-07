@@ -5,13 +5,11 @@ This is the code for [paper reference](). Originally written by [Marcela Alfaro 
 
 Contents:
 
-[Data](0.read_data.R)
+[Data](datos_original)
 
 [Code to read the data](0.read_data.R)
 
 [Descriptives](1.descriptive.R)
-
-[Animations](1.animate.R)
 
 [Analysis](2.analysis.R)
 
