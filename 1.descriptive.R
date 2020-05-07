@@ -1,14 +1,13 @@
 ## Data and packages
 
 source(file="0.packages.R")
-source(file="0.functions.R")
-load(file="data/data.Rdata")
+#source(file="0.functions.R")
+load(file="data.Rdata")
 
-estaciones <- read.table("data/datos_1970_1999/latlon_1970_1999.txt", header=F)
-estaciones$station <- 1:199
+estaciones <- as.tibble(locations)
+estaciones$station <- 1:174
 names(estaciones) <- c("lat","lon","station")
-estaciones$station <- factor(estaciones$station, levels=c(1:199))
-meteo <- dat
+estaciones$station <- factor(estaciones$station, levels=c(1:174))
 map1 <- rnaturalearth::ne_states(
   country = c("guatemala", "honduras", 
               "el salvador", "panama", 
@@ -17,26 +16,36 @@ map1 <- rnaturalearth::ne_states(
               "colombia"), returnclass = "sf")
 
 
-## Center all variables:
+names(datos)
+datos$station <- factor(datos$station, levels=c(1:174))
 
-meteo <- meteo %>% mutate(year=ceiling(meteo$month/12)) %>% 
+dat <- datos %>% 
   group_by(year,station) %>% 
-  summarize(pmensual=mean(pmensual),
-            Tavgmensual=mean(Tavgmensual),
-            PET=mean(PET),aridity=mean(aridity)) %>% 
-  left_join(data.esco.m, by=c("station","year")) %>% 
+  left_join(estaciones, by=c("station")) %>% 
   group_by(station) %>% 
-  mutate(tavg.m=mean(Tavgmensual,na.rm=TRUE),
-         ari.m=mean(aridity,na.rm=TRUE),
-         pet.m=mean(PET,na.rm=TRUE),
-         ro.m=mean(runoff,na.rm=TRUE),
-         prec.m=mean(pmensual,na.rm=TRUE)) %>% 
+  mutate(CDD.m = mean(CDD,na.rm=TRUE),
+         CWD.m = mean(CWD,na.rm=TRUE),
+         PRCPTOT.m = mean(PRCPTOT,na.rm=TRUE),
+         R10mm.m = mean(R10mm,na.rm=TRUE),
+         R20mm.m = mean(R20mm,na.rm=TRUE),
+         R95p.m = mean(R95p,na.rm=TRUE),
+         R99p.m = mean(R99p,na.rm=TRUE),
+         RX1day.m = mean(RX1day,na.rm=TRUE),
+         RX5day.m = mean(RX5day,na.rm=TRUE),
+         SDII.m = mean(SDII,na.rm=TRUE)) %>% 
   ungroup() %>% 
-  mutate(tavg.c=Tavgmensual-tavg.m,
-         ari.c=aridity-ari.m,
-         pet.c=PET-pet.m,
-         ro.c=runoff-ro.m,
-         prec.c=pmensual-prec.m)
+  mutate(CDD.c = CDD - CDD.m,
+         CWD.c = CWD - CWD.m,
+         PRCPTOT.c = PRCPTOT - PRCPTOT.m,
+         R10mm.c = R10mm - R10mm.m,
+         R20mm.c = R20mm - R20mm.m,
+         R95p.c =  R95p -  R95p.m,
+         R99p.c =  R99p -  R99p.m,
+         RX1day.c = RX1day - RX1day.m,
+         RX5day.c = RX5day - RX5day.m,
+         SDII.c = SDII - SDII.m)
+
+######### Hasta aqui llegué
 
 ## Variable Description - Boxplots
 

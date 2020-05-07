@@ -1,37 +1,29 @@
-library(R.matlab)
-library(tidyverse)
-library(fs)
-library(here)
+source("0.packages.R")
 
-data_dir <- "data/datos_1970_1999"
-latlon<-read.table("data/datos_1970_1999/latlon_1970_1999.txt")
-latlon$station <- 1:199
-names(latlon) <- c("lat","lon","station")
-latlon$station <- factor(latlon$station, levels=c(1:199))
+dat <- readMat("datos_original/indices_CA_1979_2010.mat")
 
-dat <- data_dir %>% 
-        dir_ls(regexp = "\\.mat$") %>% 
-        map_dfr(readMat, .id = "source")  %>% 
-        mutate(source = as.numeric(str_extract(source, "(\\d+)\\."))) %>%
-        rename(station = source) %>% arrange(station) %>% 
-        mutate(month = rep(1:360, 199), lat=rep(latlon$lat,each=360), 
-               lon=rep(latlon$lon, each=360))
-        
-glimpse(dat)
+length(dat)
+lapply(dat, dim)
 
-## 199 stations, 12, months, lat, lon, 4 monthly variables, 
-## 360 months = 71640 obs.
+## 174 stations, 32 years, lat, lon, 10 indices
 
-## Add runoff:
+plot(-dat[[11]][,2],dat[[11]][,1])
 
-load("data/hidro.Rdata")
-data.esco <- sapply(1:199, function(i)apply(fs[[i]],1,median))
-data.esco <- as_tibble(data.esco)
-data.esco.m <- data.esco %>% 
-        mutate(year=1:30) %>% 
-pivot_longer(-year,names_to = "station", values_to = "runoff") %>% 
-        mutate(station=as.double(substr(station, 2, 100)))  
-       
+## Create a tibble with all variables:
 
-save(dat,data.esco.m, file="data/data.Rdata")
+datos<- tibble("year" = rep(1:32,174),
+               "station"  = rep(1:174,each=32),
+               "CDD"  = as.vector(dat[[1]]),
+               "CWD"  = as.vector(dat[[2]]),
+               "PRCPTOT"  = as.vector(dat[[3]]),
+               "R10mm"  = as.vector(dat[[4]]),
+               "R20mm"  = as.vector(dat[[5]]),
+               "R95p"  = as.vector(dat[[6]]),
+               "R99p"   = as.vector(dat[[7]]),
+               "RX1day"  = as.vector(dat[[8]]),
+               "RX5day"  = as.vector(dat[[9]]),
+               "SDII"  = as.vector(dat[[10]]))
 
+locations <- dat[[11]]
+
+save(datos,locations, file="data.Rdata")
