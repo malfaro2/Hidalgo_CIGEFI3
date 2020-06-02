@@ -75,7 +75,9 @@ plot_list[[4]]
 ## Trends - Only calculates trends
 
 cLM <- function(var,year){lm(var ~ year-1)$coef}
-cMK <- function(var){as.numeric(MannKendall(ts(var))$sl)}
+cMK <- function(var){as.numeric(MannKendall(ts(var))$tau)}
+cpMK <- function(var){as.numeric(MannKendall(ts(var))$sl)}
+cpLM <- function(var,year){summary(lm(var ~ year-1))$coefficients[,4]}
 
 head(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
@@ -85,10 +87,48 @@ trends <- dat %>%
                values_to = "value") %>% 
   group_by(station, variable) %>% 
   summarize(coefMK = cMK(value),
-            coefLM = cLM(value,year))
+            coefLM = cLM(value,year),
+            pMK = cpMK(value),
+            pLM = cpLM(value, year))
 
 ## Describe trends:
 
+get.plots<-function(i){
+a<-trends %>% dplyr::filter(variable==all[i]) %>% 
+  full_join(estaciones, .id = "station") %>% 
+  ggplot(aes(-lon, lat)) +
+  geom_sf(data = map1, inherit.aes = FALSE) +
+  coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
+  geom_point(aes(fill = pLM>0.05, size = coefLM), 
+             shape = 21) +
+  scale_fill_manual(values=c("red","blue"),
+                        limits=c("FALSE","TRUE")) +
+  theme_ipsum() + theme(
+    panel.spacing = unit(0.1, "lines"),
+    strip.text.x = element_text(size = 12)) +
+  scale_size_area(max_size = 6, guide = "none") +
+  labs(title = paste("Central America: coefLM",all[i]), 
+  x = "Lon", y = "Lat") 
 
-  
+b<-trends %>% dplyr::filter(variable==all[i]) %>%  
+  full_join(estaciones, .id = "station") %>% 
+  ggplot(aes(-lon, lat)) +
+  geom_sf(data = map1, inherit.aes = FALSE) +
+  coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
+  geom_point(aes(fill = pMK>0.05, size = coefMK), 
+             shape = 21) +
+  scale_fill_manual(values=c("red","blue"),
+                      limits=c("FALSE","TRUE")) +
+  theme_ipsum() + theme(
+    panel.spacing = unit(0.1, "lines"),
+    strip.text.x = element_text(size = 12)) +
+  scale_size_area(max_size = 6, guide = "none") +
+  labs(title = paste("Central America: coefMK",all[i]), 
+       x = "Lon", y = "Lat") 
 
+return(a+b)
+}
+
+all <- unique(trends$variable);all
+
+get.plots(2)
