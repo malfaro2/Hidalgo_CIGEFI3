@@ -74,23 +74,21 @@ plot_list[[4]]
 
 ## Trends - Only calculates trends
 
-trendfunc <- function(.x_var){
-  x_var <- sym(.x_var)
-  a <- dat %>% arrange(station) %>% 
-  nest(data = c(year, CDD, CWD, PRCPTOT, R10mm, R20mm, 
-                      R95p, R99p,RX1day, RX5day, SDII,
-                CDD.m, CWD.m, PRCPTOT.m, R10mm.m, R20mm.m, 
-                R95p.m, R99p.m, RX1day.m, RX5day.m, SDII.m,
-                CDD.c, CWD.c, PRCPTOT.c, R10mm.c, R20mm.c, 
-                R95p.c, R99p.c, RX1day.c, RX5day.c, SDII.c)) %>% 
-  mutate(coef = purrr::map(data, ~ lm(.x_var ~ year-1,data = .)$coef),
-         p.mk = purrr::map(data, ~ as.numeric(MannKendall
-                                    (ts(.$x_var))$sl))) %>% 
-         tidyr::unnest(coef) %>% tidyr::unnest(p.mk) %>% 
-         dplyr::select(station,coef,p.mk) %>% 
-         left_join(estaciones, by=c("station"))
-  return(a)
-}
+cLM <- function(var,year){lm(var ~ year-1)$coef}
+cMK <- function(var){as.numeric(MannKendall(ts(var))$sl)}
+
+head(dat) # transform into station, year, CDD.c ... SDII.c
+trends <- dat %>% 
+  dplyr::select(station, year, ends_with(".c")) %>% 
+  pivot_longer(cols= ends_with(".c"),
+               names_to = "variable", 
+               values_to = "value") %>% 
+  group_by(station, variable) %>% 
+  summarize(coefMK = cMK(value),
+            coefLM = cLM(value,year))
+
+## Describe trends:
 
 
+  
 
