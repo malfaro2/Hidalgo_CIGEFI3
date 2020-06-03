@@ -6,8 +6,6 @@
 library(R.matlab)
 library(tidyverse)
 library(fs)
-
-
 library(distances)
 library(drake)
 library(dplyr)
@@ -41,3 +39,5 @@ library(lattice)
 library(ggalt)
 library(boot)
 library(Kendall)
+library(patchwork)
+library(modelr)

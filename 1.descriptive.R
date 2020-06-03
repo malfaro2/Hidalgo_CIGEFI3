@@ -132,3 +132,57 @@ return(a+b)
 all <- unique(trends$variable);all
 
 get.plots(2)
+
+## Now, apply these permutation methods:
+
+# https://climatedataguide.ucar.edu/climate-data-tools-and-analysis/trend-analysis
+# https://link.springer.com/article/10.1007/s10651-020-00446-4
+
+set.seed(1818)
+per <- lapply(1:1000,function(i)sample(1:32,32,replace=FALSE))
+
+# i <- 1:320 * get location with max 
+# j <- 1:10 #variable
+# k <- 1:1000
+# 0.025 and 0.975 quantiles of k repetitions
+
+## FALTA LA CORRECCIón TEMPORAL 
+## series 𝑌𝑡=𝑥𝑡−𝑟̂ 𝑥𝑡−1.
+test.se## falta convertir el estadístico S en uno normal
+## https://link.springer.com/article/10.1007/s10651-020-00446-4#Sec13
+
+t <- matrix(0,1000,10)
+S <- stati <- c()
+quant <- matrix(0,2,10)
+
+# for(i in 1:10){
+#   for(j in 1:1000){
+#     for(k in 1:174){
+#       var <- datos[datos$station==k&datos$
+#                      variable==all[i],]
+#       var <- var$value[per[[j]]]
+#       S[k]   <- as.numeric(MannKendall(ts(var))$S)
+#     }
+#   stati[j] <- max(S)
+#   }
+#   quant[,i] <- quantile(stati,probs = c(0.025,0.975))
+# }
+# save(quant, file="quant.Rdata")
+
+load(file="quant.Rdata")
+
+cMK2 <- function(var){as.numeric(MannKendall(ts(var))$S)}
+
+MK_var <- dat %>% 
+  dplyr::select(station, year, ends_with(".c")) %>% 
+  pivot_longer(cols= ends_with(".c"),
+               names_to = "variable", 
+               values_to = "value") %>% 
+  group_by(station, variable) %>% 
+  summarize(coefMK = cMK2(value)) %>% 
+  group_by(variable) %>% 
+  summarize(maxcMK = max(coefMK)) 
+
+tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
+  mutate(sign = Ls-maxcMK > 0)
+  <    
