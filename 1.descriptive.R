@@ -70,14 +70,14 @@ units <- list("days","days","mm","days","days",
 plot_list <- colnames(dat)[3:12] %>% 
   map( ~ BPfunc(.x, units))
 
-plot_list[[4]]
+plot_list[[1]]
 
-## Trends - Only calculates trends
+## Trends - Only calculates trends and correlation
 
-cLM <- function(var,year){lm(var ~ year-1)$coef}
-cMK <- function(var){as.numeric(MannKendall(ts(var))$tau)}
-cpMK <- function(var){as.numeric(MannKendall(ts(var))$sl)}
-cpLM <- function(var,year){summary(lm(var ~ year-1))$coefficients[,4]}
+cMKt <- function(var){as.numeric(MannKendall(ts(var))$tau)}
+cMKs <- function(var){as.numeric(MannKendall(ts(var))$S)}
+cMKv <- function(var){as.numeric(MannKendall(ts(var))$varS)}
+pMK  <- function(var){as.numeric(MannKendall(ts(var))$sl)}
 
 head(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
@@ -86,10 +86,14 @@ trends <- dat %>%
                names_to = "variable", 
                values_to = "value") %>% 
   group_by(station, variable) %>% 
-  summarize(coefMK = cMK(value),
-            coefLM = cLM(value,year),
-            pMK = cpMK(value),
-            pLM = cpLM(value, year))
+  summarize(tauMK = cMKt(value),
+            SMK = cMKs(value),
+            varSMK = cMKv(value),
+            pMK = pMK(value),
+            Z = sign(SMK)*(abs(SMK)-1)/sqrt(varSMK),
+            pZ = 2*(1-pnorm(abs(Z))),
+            n = length(value),
+            r = cor(value[-n],value[-1]))
 
 ## Describe trends:
 
@@ -99,7 +103,7 @@ a<-trends %>% dplyr::filter(variable==all[i]) %>%
   ggplot(aes(-lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
   coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
-  geom_point(aes(fill = pLM>0.05, size = coefLM), 
+  geom_point(aes(fill = pMK>0.05, size = tauMK), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
                         limits=c("FALSE","TRUE")) +
@@ -107,7 +111,7 @@ a<-trends %>% dplyr::filter(variable==all[i]) %>%
     panel.spacing = unit(0.1, "lines"),
     strip.text.x = element_text(size = 12)) +
   scale_size_area(max_size = 6, guide = "none") +
-  labs(title = paste("Central America: coefLM",all[i]), 
+  labs(title = paste("Central America: tau and p",all[i]), 
   x = "Lon", y = "Lat") 
 
 b<-trends %>% dplyr::filter(variable==all[i]) %>%  
@@ -115,7 +119,7 @@ b<-trends %>% dplyr::filter(variable==all[i]) %>%
   ggplot(aes(-lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
   coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
-  geom_point(aes(fill = pMK>0.05, size = coefMK), 
+  geom_point(aes(fill = pZ>0.05, size = Z), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
                       limits=c("FALSE","TRUE")) +
@@ -123,7 +127,7 @@ b<-trends %>% dplyr::filter(variable==all[i]) %>%
     panel.spacing = unit(0.1, "lines"),
     strip.text.x = element_text(size = 12)) +
   scale_size_area(max_size = 6, guide = "none") +
-  labs(title = paste("Central America: coefMK",all[i]), 
+  labs(title = paste("Central America: Z from KM",all[i]), 
        x = "Lon", y = "Lat") 
 
 return(a+b)
@@ -148,28 +152,35 @@ per <- lapply(1:1000,function(i)sample(1:32,32,replace=FALSE))
 
 ## FALTA LA CORRECCIón TEMPORAL 
 ## series 𝑌𝑡=𝑥𝑡−𝑟̂ 𝑥𝑡−1.
-test.se## falta convertir el estadístico S en uno normal
 ## https://link.springer.com/article/10.1007/s10651-020-00446-4#Sec13
 
-t <- matrix(0,1000,10)
-S <- stati <- c()
-quant <- matrix(0,2,10)
+stati <- matrix(0,1000,10)
 
-# for(i in 1:10){
-#   for(j in 1:1000){
-#     for(k in 1:174){
-#       var <- datos[datos$station==k&datos$
-#                      variable==all[i],]
-#       var <- var$value[per[[j]]]
-#       S[k]   <- as.numeric(MannKendall(ts(var))$S)
-#     }
-#   stati[j] <- max(S)
-#   }
-#   quant[,i] <- quantile(stati,probs = c(0.025,0.975))
-# }
-# save(quant, file="quant.Rdata")
+datos <- dat %>% 
+  dplyr::select(station, year, ends_with(".c")) %>% 
+  pivot_longer(cols= ends_with(".c"),
+               names_to = "variable", 
+               values_to = "value")
 
-load(file="quant.Rdata")
+hist(trends$r)
+trends$r[which(is.na(trends$r)==TRUE)]=1
+
+get.S <- function(k,v1,pp){
+r   <- (trends %>% filter(station==k,variable==v1))$r
+var <- datos %(>% filter(station==k,variable==v1)
+var <-)$value[pp] var - r*c(0,var[-1])
+return(cMKs(Y))
+}
+
+
+lapplystati<-1:10,function(z){v1 <- all[z];print(z);
+lapply(unlist(1:10,functi0on(y){pp <- per[[y]];print(y);
+max(unlist(lapply(1:174, function(x)get.S(x,v1,pp))))})})
+
+app)ly(squant <- lapply(stati,function(x)
+  quantile(x,probs = c(0.025,0.975))
+save(quant, file="quant.Rdata")
+file="quant.Rdata")
 
 cMK2 <- function(var){as.numeric(MannKendall(ts(var))$S)}
 
@@ -184,5 +195,5 @@ MK_var <- dat %>%
   summarize(maxcMK = max(coefMK)) 
 
 tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
-  mutate(sign = Ls-maxcMK > 0)
-  <    
+  mutate(sign = Ls-maxcMK < 0)
+       
