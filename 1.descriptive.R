@@ -167,20 +167,20 @@ trends$r[which(is.na(trends$r)==TRUE)]=1
 
 get.S <- function(k,v1,pp){
 r   <- (trends %>% filter(station==k,variable==v1))$r
-var <- datos %(>% filter(station==k,variable==v1)
-var <-)$value[pp] var - r*c(0,var[-1])
+var <- (datos %>% filter(station==k,variable==v1))$value[pp]
+Y   <- var - r*c(0,var[-1])
 return(cMKs(Y))
 }
 
+## caution! it takes a while
+stati<-lapply(1:10,function(z){v1 <- all[z];print(z);
+unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
+max(unlist(lapply(1:174, function(x)get.S(x,v1,pp))))}))})
 
-lapplystati<-1:10,function(z){v1 <- all[z];print(z);
-lapply(unlist(1:10,functi0on(y){pp <- per[[y]];print(y);
-max(unlist(lapply(1:174, function(x)get.S(x,v1,pp))))})})
-
-app)ly(squant <- lapply(stati,function(x)
-  quantile(x,probs = c(0.025,0.975))
+quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
 save(quant, file="quant.Rdata")
-file="quant.Rdata")
+
+load(file="quant.Rdata")
 
 cMK2 <- function(var){as.numeric(MannKendall(ts(var))$S)}
 
@@ -196,4 +196,3 @@ MK_var <- dat %>%
 
 tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
   mutate(sign = Ls-maxcMK < 0)
-       
