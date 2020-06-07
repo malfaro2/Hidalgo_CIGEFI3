@@ -173,12 +173,11 @@ return(cMKs(Y))
 }
 
 ## caution! it takes a while
-stati<-lapply(1:10,function(z){v1 <- all[z];print(z);
-unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
-max(unlist(lapply(1:174, function(x)get.S(x,v1,pp))))}))})
-
-quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
-save(quant, file="quant.Rdata")
+# stati<-lapply(1:10,function(z){v1 <- all[z];print(z);
+# unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
+# max(unlist(lapply(1:174, function(x)get.S(x,v1,pp))))}))})
+# quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
+# save(quant, file="quant.Rdata")
 
 load(file="quant.Rdata")
 
@@ -194,5 +193,8 @@ MK_var <- dat %>%
   group_by(variable) %>% 
   summarize(maxcMK = max(coefMK)) 
 
-tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
+tab_final1 <- tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
   mutate(sign = Ls-maxcMK < 0)
+
+library(knitr)
+kable(tab_final1)

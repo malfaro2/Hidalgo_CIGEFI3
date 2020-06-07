@@ -169,7 +169,7 @@ datos <- dat %>%
                values_to = "value")
 
 hist(trends$r)
-trends$r[which(is.na(trends$r)==TRUE)]=1
+#trends$r[which(is.na(trends$r)==TRUE)]=1
 
 get.S <- function(k,v1,pp){
 r   <- (trends %>% filter(station==k,variable==v1))$r
@@ -179,12 +179,11 @@ return(cMKs(Y))
 }
 
 ## caution! it takes a while
-stati<-# stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
+# stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
 # unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
-# ist(lapply(1:46, function(x)get.S(x,v1,pp))))}))})
-
-quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
-save(quant, file="quant2.Rdata")
+# max(unlist(lapply(1:46, function(x)get.S(x,v1,pp))))}))})
+# quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
+# save(quant, file="quant2.Rdata")
 
 load(file="quant2.Rdata")
 
@@ -200,5 +199,8 @@ MK_var <- dat %>%
   group_by(variable) %>% 
   summarize(maxcMK = max(coefMK)) 
 
-tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
+tab_final2<-tibble(MK_var, Li=quant[1,], Ls=quant[2,]) %>% 
   mutate(sign = Ls-maxcMK < 0)
+
+library(knitr)
+kable(tab_final2)
