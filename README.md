@@ -1,6 +1,6 @@
 # Trends in Central America: A Spatial Correlation Analysis
 
-This is the code for [paper reference](). Originally written by [Marcela Alfaro ](https://github.com/malfaro2).
+This is the code for [paper reference](). Originally written by [Marcela Alfaro](https://github.com/malfaro2), data curated by [Natali Mora]()
 
 
 Contents:
@@ -14,6 +14,37 @@ Contents:
 Code to read the data: [Set 1](0.read_data.R), [Set 2](0.read_data2.R)
 
 Descriptives and Trend Analysis: [Set 1](1.descriptive.R), [Set 2](1.descriptive2.R)
+
+Main Results: Are Global Trends for each index significantly increasing?
+
+Set 1:
+
+|variable  | maxcMK|      Li|      Ls|sign  |
+|:---------|------:|-------:|-------:|:-----|
+|CDD.c     |    209| 102.000| 199.050|TRUE  |
+|CWD.c     |    183| 107.475| 210.100|FALSE |
+|PRCPTOT.c |    250|  99.900| 211.150|TRUE  |
+|R10mm.c   |    217|  95.700| 213.775|TRUE  |
+|R20mm.c   |    236| 109.425| 218.000|TRUE  |
+|R95p.c    |    163| 119.425| 198.575|FALSE |
+|R99p.c    |    117|  74.475| 161.725|FALSE |
+|RX1day.c  |    218| 114.950| 219.775|FALSE |
+|RX5day.c  |    211| 108.000| 202.100|TRUE  |
+|SDII.c    |    274| 104.000| 214.100|TRUE  |
+ 
+Set 2:
+
+|variable | maxcMK|     Li|      Ls|sign  |
+|:--------|------:|------:|-------:|:-----|
+|DTR.c    |    397| 81.950| 246.650|TRUE  |
+|TN10p.c  |    193| 57.275| 217.300|FALSE |
+|TN90p.c  |    262| 53.950| 218.150|TRUE  |
+|TNn.c    |    264| 59.425| 212.200|TRUE  |
+|TNx.c    |    311| 80.950| 209.350|TRUE  |
+|TX10p.c  |    126| 64.475| 196.575|FALSE |
+|TX90p.c  |    264| 73.650| 224.050|TRUE  |
+|TXn.c    |    221| 71.475| 218.725|TRUE  |
+|TXx.c    |    343| 58.225| 235.725|TRUE  |
 
 
 Cite:
