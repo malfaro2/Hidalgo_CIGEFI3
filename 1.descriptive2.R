@@ -71,10 +71,10 @@ units <- list("% days", "ºC", "% days", "% days", "ºC","ºC", "% days", "% day
 plot_list <- colnames(dat)[3:13] %>% 
   map( ~ BPfunc(.x, units))
 
-plot_list[[11]]
+plot_list[[3]]
 
 ## CSDI, WSDI ARE ALL ZEROES. TNx has an outlier
-dat <- dat %>% dplyr::select(-starts_with("WSDI"),-starts_with("CSDI")) %>% filter(TNx < 20000)
+dat <- dat %>% dplyr::select(-starts_with("WSDI"),-starts_with("CSDI"))
 
 ## Trends - Only calculates trends and correlation
 
@@ -179,11 +179,12 @@ return(cMKs(Y))
 }
 
 ## caution! it takes a while
-# stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
-# unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
-# max(unlist(lapply(1:46, function(x)get.S(x,v1,pp))))}))})
-# quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
-# save(quant, file="quant2.Rdata")
+stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
+unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
+max(unlist(lapply(1:46, function(x)get.S(x,v1,pp))))}))})
+
+quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
+save(quant, file="quant2.Rdata")
 
 load(file="quant2.Rdata")
 
