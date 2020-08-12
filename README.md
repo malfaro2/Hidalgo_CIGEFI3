@@ -15,7 +15,9 @@ Code to read the data: [Set 1](0.read_data.R), [Set 2](0.read_data2.R)
 
 Descriptives and Trend Analysis: [Set 1](1.descriptive.R), [Set 2](1.descriptive2.R)
 
-Main Results: Are Global Trends for each index significantly increasing?
+Main Results: 
+
+## Are Global Trends for each index significantly increasing?
 
 Set 1:
 
@@ -46,6 +48,9 @@ Set 2:
 |TXn.c    |    230| 56.000| 205.250|TRUE  |
 |TXx.c    |    343| 53.000| 225.050|TRUE  |
 
+## Are Local Trends for each index significantly increasing? 
+
+(maps)
 
 Cite:
 If you find this code useful in your research, please, consider citing our paper: 
