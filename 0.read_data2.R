@@ -14,8 +14,8 @@ plot(dat[[12]][,2],dat[[12]][,1])
 
 ## Create a tibble with all variables:
 
-datos<- tibble("year" = rep(1:35,46),
-               "station"  = rep(1:46,each=35),
+datos<- tibble("year" = rep(1:35,38),
+               "station"  = rep(1:38,each=35),
 "CSDI"  = as.vector(dat[[1]]), 
 "DTR"  = as.vector(dat[[2]]), 
 "TN10p"  = as.vector(dat[[3]]), 

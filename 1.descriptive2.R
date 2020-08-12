@@ -6,9 +6,9 @@ load(file="data2.Rdata")
 # Draw plots and calculate descriptive stats
 
 estaciones <- as_tibble(locations)
-estaciones$station <- 1:46
+estaciones$station <- 1:38
 names(estaciones) <- c("lat","lon","station")
-estaciones$station <- factor(estaciones$station, levels=c(1:46))
+estaciones$station <- factor(estaciones$station, levels=c(1:38))
 map1 <- rnaturalearth::ne_states(
   country = c("guatemala", "honduras", 
               "el salvador", "panama", 
@@ -18,7 +18,7 @@ map1 <- rnaturalearth::ne_states(
 
 
 names(datos)
-datos$station <- factor(datos$station, levels=c(1:46))
+datos$station <- factor(datos$station, levels=c(1:38))
 
 dat <- datos %>% 
   group_by(year,station) %>% 
@@ -106,7 +106,7 @@ a<-trends %>% dplyr::filter(variable==all[i]) %>%
   full_join(estaciones, .id = "station") %>% 
   ggplot(aes(lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
-  coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
+  coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
   geom_point(aes(fill = pMK>0.05, size = tauMK), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
@@ -122,7 +122,7 @@ b<-trends %>% dplyr::filter(variable==all[i]) %>%
   full_join(estaciones, .id = "station") %>% 
   ggplot(aes(lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
-  coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
+  coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
   geom_point(aes(fill = pZ>0.05, size = Z), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
@@ -139,7 +139,7 @@ return(a+b)
 
 all <- unique(trends$variable);all
 
-i<-3
+i<-7
 get.plots(i)
 summary(trends %>% filter(variable==all[i]))
 
@@ -151,7 +151,7 @@ summary(trends %>% filter(variable==all[i]))
 set.seed(1818)
 per <- lapply(1:1000,function(i)sample(1:35,35,replace=FALSE))
 
-# i <- 1:46 * get location with max 
+# i <- 1:38 * get location with max 
 # j <- 1:9 #variable
 # k <- 1:1000
 # 0.025 and 0.975 quantiles of k repetitions
@@ -180,8 +180,8 @@ return(cMKs(Y))
 
 ## caution! it takes a while
 stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
-unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
-max(unlist(lapply(1:46, function(x)get.S(x,v1,pp))))}))})
+      unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
+      max(unlist(lapply(1:38, function(x)get.S(x,v1,pp))))}))})
 
 quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
 save(quant, file="quant2.Rdata")
