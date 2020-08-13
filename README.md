@@ -19,7 +19,7 @@ Main Results:
 
 ## Are Global Trends for each index significantly increasing?
 
-Set 1:
+Set 1: 
 
 |variable  | maxcMK|      Li|      Ls|sign  |
 |:---------|------:|-------:|-------:|:-----|
@@ -34,7 +34,7 @@ Set 1:
 |RX5day.c  |    211| 108.000| 202.100|TRUE  |
 |SDII.c    |    274| 104.000| 214.100|TRUE  |
  
-Set 2:
+Set 2: Precipitation (index per year)
 
 |variable | maxcMK|     Li|      Ls|sign  |
 |:--------|------:|------:|-------:|:-----|
@@ -47,6 +47,21 @@ Set 2:
 |TX90p.c  |    264| 68.375| 224.050|TRUE  |
 |TXn.c    |    230| 56.000| 205.250|TRUE  |
 |TXx.c    |    343| 53.000| 225.050|TRUE  |
+
+Set 2: Precipitation (index per month)
+
+|variable | maxcMK|     Li|      Ls|sign  |
+|:--------|------:|------:|-------:|:-----|
+|CSDI.c   |   1753| 34.000|  86.050|TRUE  |
+|DTR.c    |  -8384| 36.325| 224.775|FALSE |
+|TN10p.c  |   1784| 49.375| 214.525|TRUE  |
+|TN90p.c  |   2794| 32.500| 218.050|TRUE  |
+|TNn.c    |  22230| 41.850| 216.525|TRUE  |
+|TNx.c    |  13935| 62.850| 241.525|TRUE  |
+|TX10p.c  |   3699| 34.175| 221.625|TRUE  |
+|TX90p.c  |   5602| 57.000| 211.000|TRUE  |
+|TXn.c    |  13748| 47.325| 230.875|TRUE  |
+|TXx.c    |  15158| 69.325| 223.400|TRUE  |
 
 ## Are Local Trends for each index significantly increasing? 
 
