@@ -1,14 +1,14 @@
 ## Data and packages
 source(file="0.packages.R")
 #source(file="0.functions.R")
-load(file="data2.Rdata")
+load(file="data_prec_month.Rdata")
 
 # Draw plots and calculate descriptive stats
 
-estaciones <- as_tibble(locations)
-estaciones$station <- 1:38
-names(estaciones) <- c("lat","lon","station")
-estaciones$station <- factor(estaciones$station, levels=c(1:38))
+N <- 174 # number of stations.
+estaciones <- tibble("lat" = latlonprec[[1]][,1],
+                        "lon" = (latlonprec[[1]][,2])*-1,
+                        "station" = c(1:N))
 map1 <- rnaturalearth::ne_states(
   country = c("guatemala", "honduras", 
               "el salvador", "panama", 
@@ -16,65 +16,61 @@ map1 <- rnaturalearth::ne_states(
               "belize", "mexico", 
               "colombia"), returnclass = "sf")
 
-names(datos)
-datos$station <- factor(datos$station, levels=c(1:38))
+names(datos_prec)
 
-dat <- datos %>% 
-  group_by(year,station) %>% 
+dat <- datos_prec %>% 
+  group_by(year,month,station) %>% 
   left_join(estaciones, by=c("station")) %>% 
   group_by(station) %>% 
-  mutate(CSDI.m = mean(CSDI,na.rm=TRUE),
-         DTR.m = mean(DTR,na.rm=TRUE),
-         TN10p.m = mean(TN10p,na.rm=TRUE),
-         TN90p.m = mean(TN90p,na.rm=TRUE),
-         TNn.m = mean(TNn,na.rm=TRUE),
-         TNx.m = mean(TNx,na.rm=TRUE),
-         TX10p.m = mean(TX10p,na.rm=TRUE),
-         TX90p.m = mean(TX90p,na.rm=TRUE),
-         TXn.m = mean(TXn,na.rm=TRUE),
-         TXx.m = mean(TXx,na.rm=TRUE),
-         WSDI.m = mean(WSDI,na.rm=TRUE)) %>% 
+  mutate(CDD.m = mean(CDD,na.rm=TRUE),
+         CWD.m = mean(CWD,na.rm=TRUE),
+         PRCTOT.m = mean(PRCTOT,na.rm=TRUE),
+         R10mm.m = mean(R10mm,na.rm=TRUE),
+         R20mm.m = mean(R20mm,na.rm=TRUE),
+         R95p.m = mean(R95p,na.rm=TRUE),
+         R99p.m = mean(R99p,na.rm=TRUE),
+         RX1day.m = mean(RX1day,na.rm=TRUE),
+         RX5day.m = mean(RX5day,na.rm=TRUE),
+         SDII.m = mean(SDII,na.rm=TRUE)) %>% 
   ungroup() %>% 
-  mutate(CSDI.c = CSDI - CSDI.m,
-         DTR.c = DTR - DTR.m,
-         TN10p.c = TN10p - TN10p.m,
-         TN90p.c = TN90p - TN90p.m,
-         TNn.c = TNn - TNn.m,
-         TNx.c = TNx - TNx.m,
-         TX10p.c =  TX10p - TX10p.m,
-         TX90p.c =  TX90p - TX90p.m,
-         TXn.c = TXn - TXn.m,
-         TXx.c = TXx - TXx.m,
-         WSDI.c = WSDI - WSDI.m)
+  mutate(CDD.c = CDD - CDD.m,
+         CWD.c = CWD - CWD.m,
+         PRCTOT.c = PRCTOT - PRCTOT.m,
+         R10mm.c = R10mm - R10mm.m,
+         R20mm.c = R20mm - R20mm.m,
+         R95p.c = R95p - R95p.m,
+         R99p.c = R99p - R99p.m,
+         RX1day.c = RX1day - RX1day.m,
+         RX5day.c = RX5day - RX5day.m,
+         SDII.c = SDII - SDII.m,
+         time = paste0(year,".",month))
 
 ## Variable Description - Boxplots
 
 BPfunc <- function(.x_var, units){
   x_var <- sym(.x_var)
   a <- dat %>%
-  ggplot(aes(x=as.factor(year), y=!! x_var)) +
+  ggplot(aes(x=as.factor(time), y=!! x_var)) +
   geom_boxplot() +
   theme_ipsum() +
   theme(
     legend.position="none",
     panel.spacing = unit(0.1, "lines"),
     strip.text.x = element_text(size = 8)) +
-  xlab("Year") +
+  xlab("Time") +
   ylab(x_var)  +
   labs(caption=paste("units: ",units))
   return(a)
 }
 
-units <- list("% days", "ºC", "% days", "% days", "ºC",
-              "ºC", "% days", "% days", "ºC","ºC" ,"% days")
-
-plot_list <- colnames(dat)[3:13] %>% 
+units <- c("NA")
+plot_list <- colnames(dat)[4:13] %>% 
   map( ~ BPfunc(.x, units))
 
-plot_list[[3]]
+plot_list[[10]]
 
-## CSDI, WSDI ARE ALL ZEROES. TNx has an outlier
-dat <- dat %>% dplyr::select(-starts_with("WSDI"),-starts_with("CSDI"))
+## R99p ARE mostly ALL ZEROES. SDII has infinite values and NAs
+dat <- dat %>% dplyr::select(-starts_with("R99p"), -starts_with("SDII"))
 
 ## Trends - Only calculates trends and correlation
 
@@ -85,7 +81,7 @@ pMK  <- function(var){as.numeric(MannKendall(ts(var))$sl)}
 
 summary(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
-  dplyr::select(station, year, ends_with(".c")) %>% 
+  dplyr::select(station, time, ends_with(".c")) %>% 
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
@@ -100,14 +96,13 @@ trends <- dat %>%
             r = cor(value[-n],value[-1]))
 
 ## Describe trends:
-
 get.plots<-function(i){
 a<-trends %>% dplyr::filter(variable==all[i]) %>% 
   full_join(estaciones, .id = "station") %>% 
   ggplot(aes(lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
   coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
-  geom_point(aes(fill = pMK>0.05, size = tauMK), 
+  geom_point(aes(fill = pMK>0.05, size = (abs(tauMK)+0.01)*100), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
                         limits=c("FALSE","TRUE")) +
@@ -123,7 +118,7 @@ b<-trends %>% dplyr::filter(variable==all[i]) %>%
   ggplot(aes(lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
   coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
-  geom_point(aes(fill = pZ>0.05, size = Z), 
+  geom_point(aes(fill = pZ>0.05, size = abs(Z)+0.01), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
                       limits=c("FALSE","TRUE")) +
@@ -139,7 +134,7 @@ return(a+b)
 
 all <- unique(trends$variable);all
 
-i<-7
+i<-8
 get.plots(i)
 summary(trends %>% filter(variable==all[i]))
 
@@ -149,20 +144,20 @@ summary(trends %>% filter(variable==all[i]))
 # https://link.springer.com/article/10.1007/s10651-020-00446-4
 
 set.seed(1818)
-per <- lapply(1:1000,function(i)sample(1:35,35,replace=FALSE))
+per <- lapply(1:1000,function(i)sample(1:N,N,replace=FALSE))
 
-# i <- 1:38 * get location with max 
-# j <- 1:9 #variable
+# i <- 1:N * get location with max 
+# j <- 1:10 #variable
 # k <- 1:1000
 # 0.025 and 0.975 quantiles of k repetitions
 
-## FALTA LA CORRECCIón TEMPORAL 
+## CORRECCIón TEMPORAL 
 ## series 𝑌𝑡=𝑥𝑡−𝑟̂ 𝑥𝑡−1.
 ## https://link.springer.com/article/10.1007/s10651-020-00446-4#Sec13
 
 stati <- matrix(0,1000,9)
 
-datos <- dat %>% 
+dat8s <- dat %>% 
   dplyr::select(station, year, ends_with(".c")) %>% 
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
@@ -179,14 +174,14 @@ return(cMKs(Y))
 }
 
 ## caution! it takes a while
-stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
+stati<-lapply(1:10,func8on(z){v1 <- all[z];print(z);
       unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
-      max(unlist(lapply(1:38, function(x)get.S(x,v1,pp))))}))})
+      max(unlist(lapply(1:38, fun174ion(x)get.S(x,v1,pp))))}))})
 
 quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
-save(quant, file="quant2.Rdata")
+save(quant, file="quant_month_temp.Rdprec)
 
-load(file="quant2.Rdata")
+load(file="quant_month_temp.Rdprec)
 
 cMK2 <- function(var){as.numeric(MannKendall(ts(var))$S)}
 

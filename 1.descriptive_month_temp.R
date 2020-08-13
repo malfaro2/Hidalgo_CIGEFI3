@@ -1,14 +1,13 @@
 ## Data and packages
 source(file="0.packages.R")
 #source(file="0.functions.R")
-load(file="data2.Rdata")
+load(file="data_temp_month.Rdata")
 
 # Draw plots and calculate descriptive stats
 
-estaciones <- as_tibble(locations)
-estaciones$station <- 1:38
-names(estaciones) <- c("lat","lon","station")
-estaciones$station <- factor(estaciones$station, levels=c(1:38))
+estaciones <- tibble("lat" = latlontemp[[1]][,1],
+                        "lon" = latlontemp[[1]][,2],
+                        "station" = c(1:38))
 map1 <- rnaturalearth::ne_states(
   country = c("guatemala", "honduras", 
               "el salvador", "panama", 
@@ -16,11 +15,10 @@ map1 <- rnaturalearth::ne_states(
               "belize", "mexico", 
               "colombia"), returnclass = "sf")
 
-names(datos)
-datos$station <- factor(datos$station, levels=c(1:38))
+names(datos_temp)
 
-dat <- datos %>% 
-  group_by(year,station) %>% 
+dat <- datos_temp %>% 
+  group_by(year,month,station) %>% 
   left_join(estaciones, by=c("station")) %>% 
   group_by(station) %>% 
   mutate(CSDI.m = mean(CSDI,na.rm=TRUE),
@@ -32,8 +30,7 @@ dat <- datos %>%
          TX10p.m = mean(TX10p,na.rm=TRUE),
          TX90p.m = mean(TX90p,na.rm=TRUE),
          TXn.m = mean(TXn,na.rm=TRUE),
-         TXx.m = mean(TXx,na.rm=TRUE),
-         WSDI.m = mean(WSDI,na.rm=TRUE)) %>% 
+         TXx.m = mean(TXx,na.rm=TRUE)) %>% 
   ungroup() %>% 
   mutate(CSDI.c = CSDI - CSDI.m,
          DTR.c = DTR - DTR.m,
@@ -45,36 +42,34 @@ dat <- datos %>%
          TX90p.c =  TX90p - TX90p.m,
          TXn.c = TXn - TXn.m,
          TXx.c = TXx - TXx.m,
-         WSDI.c = WSDI - WSDI.m)
+         time = paste0(year,".",month))
 
 ## Variable Description - Boxplots
 
 BPfunc <- function(.x_var, units){
   x_var <- sym(.x_var)
   a <- dat %>%
-  ggplot(aes(x=as.factor(year), y=!! x_var)) +
+  ggplot(aes(x=as.factor(time), y=!! x_var)) +
   geom_boxplot() +
   theme_ipsum() +
   theme(
     legend.position="none",
     panel.spacing = unit(0.1, "lines"),
     strip.text.x = element_text(size = 8)) +
-  xlab("Year") +
+  xlab("Time") +
   ylab(x_var)  +
   labs(caption=paste("units: ",units))
   return(a)
 }
 
-units <- list("% days", "ºC", "% days", "% days", "ºC",
-              "ºC", "% days", "% days", "ºC","ºC" ,"% days")
-
-plot_list <- colnames(dat)[3:13] %>% 
+units <- c("NA")
+plot_list <- colnames(dat)[4:13] %>% 
   map( ~ BPfunc(.x, units))
 
-plot_list[[3]]
+plot_list[[1]]
 
-## CSDI, WSDI ARE ALL ZEROES. TNx has an outlier
-dat <- dat %>% dplyr::select(-starts_with("WSDI"),-starts_with("CSDI"))
+## CSDI ARE mostly ALL ZEROES. TXx has an outlier
+#dat <- dat %>% dplyr::select(-starts_with("CSDI"))
 
 ## Trends - Only calculates trends and correlation
 
@@ -85,7 +80,7 @@ pMK  <- function(var){as.numeric(MannKendall(ts(var))$sl)}
 
 summary(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
-  dplyr::select(station, year, ends_with(".c")) %>% 
+  dplyr::select(station, time, ends_with(".c")) %>% 
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
@@ -107,7 +102,7 @@ a<-trends %>% dplyr::filter(variable==all[i]) %>%
   ggplot(aes(lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
   coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
-  geom_point(aes(fill = pMK>0.05, size = tauMK), 
+  geom_point(aes(fill = pMK>0.05, size = (abs(tauMK)+0.01)*100), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
                         limits=c("FALSE","TRUE")) +
@@ -123,7 +118,7 @@ b<-trends %>% dplyr::filter(variable==all[i]) %>%
   ggplot(aes(lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
   coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
-  geom_point(aes(fill = pZ>0.05, size = Z), 
+  geom_point(aes(fill = pZ>0.05, size = abs(Z)+0.01), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
                       limits=c("FALSE","TRUE")) +
@@ -152,11 +147,11 @@ set.seed(1818)
 per <- lapply(1:1000,function(i)sample(1:35,35,replace=FALSE))
 
 # i <- 1:38 * get location with max 
-# j <- 1:9 #variable
+# j <- 1:10 #variable
 # k <- 1:1000
 # 0.025 and 0.975 quantiles of k repetitions
 
-## FALTA LA CORRECCIón TEMPORAL 
+## CORRECCIón TEMPORAL 
 ## series 𝑌𝑡=𝑥𝑡−𝑟̂ 𝑥𝑡−1.
 ## https://link.springer.com/article/10.1007/s10651-020-00446-4#Sec13
 
@@ -179,14 +174,14 @@ return(cMKs(Y))
 }
 
 ## caution! it takes a while
-stati<-lapply(1:9,function(z){v1 <- all[z];print(z);
+stati<-lapply(1:9,funct10on(z){v1 <- all[z];print(z);
       unlist(lapply(1:100,function(y){pp <- per[[y]];print(y);
       max(unlist(lapply(1:38, function(x)get.S(x,v1,pp))))}))})
 
 quant <- sapply(stati,function(x){quantile(x,probs = c(0.025,0.975))})
-save(quant, file="quant2.Rdata")
+save(quant, file="quant2.Rdata_month_temp)
 
-load(file="quant2.Rdata")
+load(file="quant2.Rdata_month_temp)
 
 cMK2 <- function(var){as.numeric(MannKendall(ts(var))$S)}
 
