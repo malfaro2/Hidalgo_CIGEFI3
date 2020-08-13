@@ -19,7 +19,7 @@ Main Results:
 
 ## Are Global Trends for each index significantly increasing?
 
-Set 1: 
+Set 1: Precipitation (index per year)
 
 |variable  | maxcMK|      Li|      Ls|sign  |
 |:---------|------:|-------:|-------:|:-----|
@@ -33,8 +33,21 @@ Set 1:
 |RX1day.c  |    218| 114.950| 219.775|FALSE |
 |RX5day.c  |    211| 108.000| 202.100|TRUE  |
 |SDII.c    |    274| 104.000| 214.100|TRUE  |
+
+Set 1: Precipitation (index per month)
+
+|variable | maxcMK|       Li|       Ls|sign |
+|:--------|------:|--------:|--------:|:----|
+|CDD.c    |  12709| 1132.000| 2923.450|TRUE |
+|CWD.c    |  34592|  817.775| 2535.175|TRUE |
+|PRCTOT.c |  33747|  612.000| 2510.250|TRUE |
+|R10mm.c  |  33834|  591.700| 2541.325|TRUE |
+|R20mm.c  |  32953|  612.475| 2594.525|TRUE |
+|R95p.c   |  20403|  939.825| 2725.025|TRUE |
+|RX1day.c |  28593|  761.400| 2616.150|TRUE |
+|RX5day.c |  32341|  714.925| 2720.650|TRUE |
  
-Set 2: Precipitation (index per year)
+Set 2: Temperature (index per year)
 
 |variable | maxcMK|     Li|      Ls|sign  |
 |:--------|------:|------:|-------:|:-----|
@@ -48,7 +61,7 @@ Set 2: Precipitation (index per year)
 |TXn.c    |    230| 56.000| 205.250|TRUE  |
 |TXx.c    |    343| 53.000| 225.050|TRUE  |
 
-Set 2: Precipitation (index per month)
+Set 2: Temperature (index per month)
 
 |variable | maxcMK|     Li|      Ls|sign  |
 |:--------|------:|------:|-------:|:-----|
