@@ -77,3 +77,4 @@ datos_prec <- tibble("year" = rep(1:32,174*12),
                     "SDII"  = unlist(lapply(prec,function(x)x$SDII)))
 
 save(datos_prec,latlonprec, file="data_prec_month.Rdata")
+
