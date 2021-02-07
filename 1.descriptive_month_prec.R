@@ -67,10 +67,11 @@ units <- c("NA")
 plot_list <- colnames(dat)[4:13] %>% 
   map( ~ BPfunc(.x, units))
 
-plot_list[[10]]
+plot_list[[4]]
 
 ## R99p ARE mostly ALL ZEROES. SDII has infinite values and NAs
-dat <- dat %>% dplyr::select(-starts_with("R99p"), -starts_with("SDII"))
+dat <- dat %>% 
+  dplyr::select(-starts_with("R99p"), -starts_with("SDII"))
 
 ## Trends - Only calculates trends and correlation
 
@@ -85,6 +86,7 @@ trends <- dat %>%
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
+  arrange(time) %>% 
   group_by(station, variable) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
@@ -134,6 +136,9 @@ return(a+b)
 
 all <- unique(trends$variable);all
 
-i<-8
+i<-1
 get.plots(i)
 summary(trends %>% filter(variable==all[i]))
+
+
+trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))

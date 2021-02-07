@@ -89,6 +89,7 @@ trends <- dat %>%
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
+  arrange(year) %>% 
   group_by(station, variable) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
@@ -139,7 +140,8 @@ return(a+b)
 
 all <- unique(trends$variable);all
 
-i<-7
+i<-4
 get.plots(i)
 summary(trends %>% filter(variable==all[i]))
+trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))
 

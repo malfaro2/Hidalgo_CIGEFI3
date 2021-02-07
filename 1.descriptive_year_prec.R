@@ -85,6 +85,7 @@ trends <- dat %>%
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
+  arrange(year) %>% 
   group_by(station, variable) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
@@ -102,7 +103,7 @@ a<-trends %>% dplyr::filter(variable==all[i]) %>%
   full_join(estaciones, .id = "station") %>% 
   ggplot(aes(-lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
-  coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
+  coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
   geom_point(aes(fill = pMK>0.05, size = tauMK), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
@@ -118,7 +119,7 @@ b<-trends %>% dplyr::filter(variable==all[i]) %>%
   full_join(estaciones, .id = "station") %>% 
   ggplot(aes(-lon, lat)) +
   geom_sf(data = map1, inherit.aes = FALSE) +
-  coord_sf(ylim = c(0,25), xlim = c(-70, -110)) +
+  coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
   geom_point(aes(fill = pZ>0.05, size = Z), 
              shape = 21) +
   scale_fill_manual(values=c("red","blue"),
@@ -135,5 +136,7 @@ return(a+b)
 
 all <- unique(trends$variable);all
 
-get.plots(2)
-
+i<-4
+get.plots(i)
+summary(trends %>% filter(variable==all[i]))
+trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))

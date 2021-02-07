@@ -5,9 +5,10 @@ load(file="data_temp_month.Rdata")
 
 # Draw plots and calculate descriptive stats
 
+N <- 38 # number of stations.
 estaciones <- tibble("lat" = latlontemp[[1]][,1],
                         "lon" = latlontemp[[1]][,2],
-                        "station" = c(1:38))
+                        "station" = c(1:N))
 map1 <- rnaturalearth::ne_states(
   country = c("guatemala", "honduras", 
               "el salvador", "panama", 
@@ -66,10 +67,10 @@ units <- c("NA")
 plot_list <- colnames(dat)[4:13] %>% 
   map( ~ BPfunc(.x, units))
 
-plot_list[[1]]
+plot_list[[3]]
 
 ## CSDI ARE mostly ALL ZEROES. TXx has an outlier
-#dat <- dat %>% dplyr::select(-starts_with("CSDI"))
+dat <- dat %>% dplyr::select(-starts_with("CSDI"))
 
 ## Trends - Only calculates trends and correlation
 
@@ -84,6 +85,7 @@ trends <- dat %>%
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
+  arrange(time) %>% 
   group_by(station, variable) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
@@ -134,7 +136,8 @@ return(a+b)
 
 all <- unique(trends$variable);all
 
-i<-7
+i<-1
 get.plots(i)
 summary(trends %>% filter(variable==all[i]))
 
+trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))
