@@ -98,7 +98,6 @@ Set 2: Temperature (index per month)
 
 |variable | maxcMK (sign)|     Li|      Ls|signif  |
 |:--------|-------------:|------:|-------:|:-------|
-|CSDI.c   |   1753  (+)  | 34.000|  86.050|TRUE    |
 |DTR.c    |  -8384  (+)  | 36.325| 224.775|FALSE   |
 |TN10p.c  |   1784  (+)  | 49.375| 214.525|TRUE    |
 |TN90p.c  |   2794  (-)  | 32.500| 218.050|TRUE    |
