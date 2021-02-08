@@ -2,6 +2,7 @@
 ### PRECIPITATION ####
 ######################
 
+rm(list=ls())
 source(file="1.descriptive_month_prec.R")
 
 ## Trend test using permutation methods:
@@ -45,10 +46,10 @@ get.S <- function(k,v1,pp){
 # save(stati, file="quant_month_prec.Rdata")
 load(file="quant_month_prec.Rdata")
 
-## a list of 8 variables, each with 173 Kendall S Scores,
+## a list of 8 variables, each with 174 Kendall S Scores,
 ## and the 2.5% and 97.5% percentiles of S for each location
 
-local <-lapply(1:8,function(x){cbind(stati[[x]][,101],
+tab_local_month_prec <-lapply(1:8,function(x){cbind(stati[[x]][,101],
            apply(stati[[x]],1,function(y)quantile(y,probs=0.025)),
            apply(stati[[x]],1,function(y)quantile(y,probs=0.975)))})
 
@@ -61,15 +62,16 @@ global <- tibble(Var=all,Max.S = calc_max,
      P2.5= apply(tab_global,2,function(y)quantile(y,probs=0.025)),
      P97.5= apply(tab_global,2,function(y)quantile(y,probs=0.975)))
 
-tab_final2<-global %>% 
+tab_global_month_prec<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 
-library(knitr)
-kable(tab_final2)
+save(tab_global_month_prec, file="tab_global_month_prec.Rdata")
+save(tab_local_month_prec,all, file="tab_local_month_prec.Rdata")
 
 ######################
 ####  TEMPERATURE ####
 ######################
+
 rm(list=ls())
 source(file="1.descriptive_month_temp.R")
 
@@ -86,7 +88,7 @@ datos <- dat %>%
 
 hist(trends$r)
 
-# k = 1 #N=46 total
+# k = 1 #N=38 total
 # v1 = "DTR.c" # 9 in total
 # pp = it's the permuted set, 101 is the real one.
 get.S <- function(k,v1,pp){
@@ -106,10 +108,10 @@ get.S <- function(k,v1,pp){
 # save(stati, file="quant_month_temp.Rdata")
 load(file="quant_month_temp.Rdata")
 
-## a list of 9 variables, each with 46 Kendall Scores,
+## a list of 9 variables, each with 38 Kendall Scores,
 ## and the 2.5% and 97.5% percentiles of S for each location
 
-local <-lapply(1:9,function(x){cbind(stati[[x]][,101],
+tab_local_month_temp <-lapply(1:9,function(x){cbind(stati[[x]][,101],
         apply(stati[[x]],1,function(y)quantile(y,probs=0.025)),
         apply(stati[[x]],1,function(y)quantile(y,probs=0.975)))})
 
@@ -122,8 +124,9 @@ global <- tibble(Var=all,Max.S = calc_max,
  P2.5= apply(tab_global,2,function(y)quantile(y,probs=0.025)),
  P97.5= apply(tab_global,2,function(y)quantile(y,probs=0.975)))
 
-tab_final2<-global %>% 
+tab_global_month_temp<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 
-library(knitr)
-kable(tab_final2)
+save(tab_global_month_temp, file="tab_global_month_temp.Rdata")
+save(tab_local_month_temp,all, file="tab_local_month_temp.Rdata")
+

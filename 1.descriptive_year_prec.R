@@ -1,6 +1,7 @@
 ## Data and packages
 source(file="0.packages.R")
-#source(file="0.functions.R")
+source(file="functions/BPfunc_year.R")
+source(file="functions/get_plots.R")
 load(file="data_prec_year.Rdata")
 
 # Draw plots and calculate descriptive stats
@@ -48,29 +49,23 @@ dat <- datos %>%
 
 ## Variable Description - Boxplots
 
-BPfunc <- function(.x_var, units){
-  x_var <- sym(.x_var)
-  a <- dat %>%
-  ggplot(aes(x=as.factor(year), y=!! x_var)) +
-  geom_boxplot() +
-  theme_ipsum() +
-  theme(
-    legend.position="none",
-    panel.spacing = unit(0.1, "lines"),
-    strip.text.x = element_text(size = 8)) +
-  xlab("Year") +
-  ylab(x_var)  +
-  labs(caption=paste("units: ",units))
-  return(a)
-}
-
 units <- list("days","days","mm","days","days",
               "mm","mm","mm","mm","mm/day")
-
 plot_list <- colnames(dat)[3:12] %>% 
-  map( ~ BPfunc(.x, units))
-
+  map( ~ BPfunc_year(.x, units))
 plot_list[[1]]
+
+jpeg("maps/desc_prec_year1.jpg", width = 1200, height = 750)
+(plot_list[[1]] | plot_list[[2]]) /
+  (plot_list[[3]] | plot_list[[4]]) 
+dev.off()
+jpeg("maps/desc_prec_year2.jpg", width = 1200, height = 750)
+(plot_list[[5]] | plot_list[[6]]) /
+  (plot_list[[7]] | plot_list[[8]])
+dev.off()
+jpeg("maps/desc_prec_year3.jpg", width = 1200, height = 325)
+(plot_list[[9]] | plot_list[[10]]) 
+dev.off()
 
 ## Trends - Only calculates trends and correlation
 
@@ -98,45 +93,8 @@ trends <- dat %>%
 
 ## Describe trends:
 
-get.plots<-function(i){
-a<-trends %>% dplyr::filter(variable==all[i]) %>% 
-  full_join(estaciones, .id = "station") %>% 
-  ggplot(aes(-lon, lat)) +
-  geom_sf(data = map1, inherit.aes = FALSE) +
-  coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
-  geom_point(aes(fill = pMK>0.05, size = tauMK), 
-             shape = 21) +
-  scale_fill_manual(values=c("red","blue"),
-                        limits=c("FALSE","TRUE")) +
-  theme_ipsum() + theme(
-    panel.spacing = unit(0.1, "lines"),
-    strip.text.x = element_text(size = 12)) +
-  scale_size_area(max_size = 6, guide = "none") +
-  labs(title = paste("Central America: tau and p",all[i]), 
-  x = "Lon", y = "Lat") 
-
-b<-trends %>% dplyr::filter(variable==all[i]) %>%  
-  full_join(estaciones, .id = "station") %>% 
-  ggplot(aes(-lon, lat)) +
-  geom_sf(data = map1, inherit.aes = FALSE) +
-  coord_sf(ylim = c(0,25), xlim = c(-110, -70)) +
-  geom_point(aes(fill = pZ>0.05, size = Z), 
-             shape = 21) +
-  scale_fill_manual(values=c("red","blue"),
-                      limits=c("FALSE","TRUE")) +
-  theme_ipsum() + theme(
-    panel.spacing = unit(0.1, "lines"),
-    strip.text.x = element_text(size = 12)) +
-  scale_size_area(max_size = 6, guide = "none") +
-  labs(title = paste("Central America: Z from KM",all[i]), 
-       x = "Lon", y = "Lat") 
-
-return(a+b)
-}
-
 all <- unique(trends$variable);all
-
 i<-4
-get.plots(i)
+get_plots(i)
 summary(trends %>% filter(variable==all[i]))
 trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))

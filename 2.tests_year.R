@@ -26,7 +26,7 @@ datos <- dat %>%
 hist(trends$r)
 #trends$r[which(is.na(trends$r)==TRUE)]=1
 
-# k = 1 #38 total stations
+# k = 1 #174 total stations
 # v1 = "CDD.c" # 10 indexes in total
 # pp = it's the permuted set, 101 is the real one.
 get.S <- function(k,v1,pp){
@@ -39,17 +39,17 @@ get.S <- function(k,v1,pp){
 
 ## value 101 is the real value
 ## caution! it takes a while
-#stati is a list of 10 variables, each w/ matrix(0,38,101)
+#stati is a list of 10 variables, each w/ matrix(0,174,101)
 # stati<-lapply(1:10,function(z){v1 <- all[z];print(v1);
 # (sapply(1:101,function(y){pp <- per[[y]];print(y);
-# ((sapply(1:38, function(x)get.S(x,v1,pp))))}))})
+# ((sapply(1:174, function(x)get.S(x,v1,pp))))}))})
 # save(stati, file="quant_year_prec.Rdata")
 load(file="quant_year_prec.Rdata")
 
-## a list of 10 variables, each with 38 Kendall S Scores,
+## a list of 10 variables, each with 174 Kendall S Scores,
 ## and the 2.5% and 97.5% percentiles of S for each location
 
-local <-lapply(1:10,function(x){cbind(stati[[x]][,101],
+tab_local_year_prec <-lapply(1:10,function(x){cbind(stati[[x]][,101],
       apply(stati[[x]],1,function(y)quantile(y,probs=0.025)),
       apply(stati[[x]],1,function(y)quantile(y,probs=0.975)))})
 
@@ -62,11 +62,11 @@ global <- tibble(Var=all,Max.S = calc_max,
           P2.5= apply(tab_global,2,function(y)quantile(y,probs=0.025)),
           P97.5= apply(tab_global,2,function(y)quantile(y,probs=0.975)))
 
-tab_final2<-global %>% 
+tab_global_year_prec<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 
-kable(tab_final2)
-
+save(tab_global_year_prec, file="tab_global_year_prec.Rdata")
+save(tab_local_year_prec, all, file="tab_local_year_prec.Rdata")
 
 ######################
 ###  TEMPERATURE  ####
@@ -116,7 +116,7 @@ load(file="quant_year_temp.Rdata")
 ## a list of 9 variables, each with 38 Kendall S Scores,
 ## and the 2.5% and 97.5% percentiles of S for each location
 
-local <-lapply(1:9,function(x){cbind(stati[[x]][,101],
+tab_local_year_temp <-lapply(1:9,function(x){cbind(stati[[x]][,101],
        apply(stati[[x]],1,function(y)quantile(y,probs=0.025)),
        apply(stati[[x]],1,function(y)quantile(y,probs=0.975)))})
 
@@ -129,7 +129,8 @@ global <- tibble(Var=all,Max.S = calc_max,
         P2.5= apply(tab_global,2,function(y)quantile(y,probs=0.025)),
         P97.5= apply(tab_global,2,function(y)quantile(y,probs=0.975)))
 
-tab_final2<-global %>% 
+tab_global_year_temp<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 
-kable(tab_final2)
+save(tab_global_year_temp, file="tab_global_year_temp.Rdata")
+save(tab_local_year_temp,all, file="tab_local_year_temp.Rdata")

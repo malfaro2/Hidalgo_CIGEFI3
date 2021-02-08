@@ -1,0 +1,170 @@
+---
+title: "CLIMDEX trends"
+author: "Marcela Alfaro Córdoba"
+date: "2/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+
+## Introduction
+
+This is a report that describes how to calculate the trend significance of each of the precipitation and temperature CLIMDEX indexes. The summary of the original data is the following:
+
+```{r summary, echo=FALSE, message=FALSE, warning=FALSE}
+load("data_prec_month.Rdata")
+SPM<-length(unique(datos_prec$station))
+IPM<-names(datos_prec)[-c(1:3)]
+rm(datos_prec)
+rm(latlonprec)
+
+load("data_temp_month.Rdata")
+STM<-length(unique(datos_temp$station))
+ITM<-names(datos_temp)[-c(1:3)]
+rm(datos_temp)
+rm(latlontemp)
+
+load("data_prec_year.Rdata")
+SPY<-length(unique(datos$station))
+IPY<-names(datos)[-c(1:2)]
+rm(datos)
+rm(locations)
+
+load("data_temp_year.Rdata")
+STY<-length(unique(datos$station))
+ITY<-names(datos)[-c(1:2)]
+rm(datos)
+rm(locations)
+
+table <- rbind(c("Index Variable","Time Domain", 
+         "Test", "N of indexes", "N stations"),
+       c("Precipitation", "Monthly", "Global and Local",length(IPM)-2,SPM),
+       c("Precipitation", "Yearly", "Global and Local",length(IPY),SPY),
+       c("Temperature", "Monthly", "Global and Local",length(ITM)-1,STM),
+       c("Temperature", "Yearly", "Global and Local",length(ITY)-2,STY))
+
+knitr::kable(table)
+
+# print("Temperature, Monthly:")
+# print(ITM)
+# 
+# print("Temperature, Yearly:")
+# print(ITY)
+# 
+# print("Precipitation, Monthly:")
+# print(IPM)
+# 
+# print("Precipitation, Yearly:")
+# print(IPY)
+```
+
+  * **Precipitation**:  CDD (consecutive dry days), CWD (consecutive wet days), PRCPTOT (annual total PRCP in wet days in mm), R10mm (number of heavy precipitation days), R20mm (number of very heavy precipitation days), R95p (very wet days in mm), R99p (extremely wet days in mm, a lot of 0s), RX1day (max 1-day precipitation amount in mm), RX5day (max 5-day precipitation amount in mm), SDII (simple daily intensity index in mm/day a lot of 0s). 32 years (1979-2010), 10 indices.
+  
+  * **Temperature**:  CSDI (annual count of days with at least 6 consecutive days when TN < 10th percentile, 0s for all locations and years),  DTR (Daily temperature range), TN10p (Percentage of days when TN < 10th percentile), TN90p (Percentage of days when TN > 90th percentile), TNn (Minimum value of daily minimum temperature), TNx (Minimum value of daily maximum temperature), TX10p (Percentage of days when TX < 10th percentile), TX90p (Percentage of days when TN > 90th percentile), TXn (Minimum value of daily maximum temperature), TXx (Maximum value of daily maximum temperature), WSDI (annual count of days with at least 6 consecutive days when TX > 90th percentile, 0s for all locations and years). 35 years (1970-2004), 11 indices
+  
+Source: [https://www.climdex.org/learn/](https://www.climdex.org/learn/)
+
+## Description of each index
+
+* **Precipitation - Monthly**
+
+![](maps/desc_prec_month1.jpg)
+![](maps/desc_prec_month2.jpg)
+![](maps/desc_prec_month3.jpg)
+  
+* **Precipitation - Yearly**
+
+![](maps/desc_prec_year1.jpg)
+![](maps/desc_prec_year2.jpg)
+![](maps/desc_prec_year3.jpg)
+
+* **Temperature - Monthly**
+
+![](maps/desc_temp_month1.jpg)
+![](maps/desc_temp_month2.jpg)
+![](maps/desc_temp_month3.jpg)
+
+* **Temperature - Yearly**
+
+![](maps/desc_temp_year1.jpg)
+![](maps/desc_temp_year2.jpg)
+![](maps/desc_temp_year3.jpg)
+
+## Methods
+
+### Local Test
+
+A permutation test was calculated using the Mann Kendall S as statistic. The steps to perform the test for each of the indexes were the following:
+
+1. Create 100 different sets of permutations from the time domain. The set number 101 will be the correct order. The statistic calculated with the last set will be called *observed S*.
+
+2. For each location $j$, a $101$ time series ($X_t$) will be corrected for temporal autocorrelation. In order to do this, the autocorrelation $\hat{r}$ is calculated in each of the time series, and then it is used in: $Y_t = X_t - \hat{r}X_{t-1}$.
+
+3. Once the series are corrected, the Mann Kendall $S$ statistic is calculated for each location $j$, and permutation $k$. 
+
+4. The permutation quantiles ($0.025, 0.975$) are calculated for each location and then, the *observed S* is compared against this interval.
+
+### Global Test
+
+Similarly, a permutation test was calculated using the maximum of the Mann Kendall S as statistic. The steps to perform the test for each of the indexes were the following:
+
+1. Create 100 different sets of permutations from the time domain. The set number 101 will be the correct order. The statistic calculated with the last set will be called *observed S*.
+
+2. For each location $j$, a $101$ time series ($X_t$) will be corrected for temporal autocorrelation. In order to do this, the autocorrelation $\hat{r}$ is calculated in each of the time series, and then it is used in: $Y_t = X_t - \hat{r}X_{t-1}$.
+
+3. Once the series are corrected, the Mann Kendall $S$ statistic is calculated for each location $j$, and permutation $k$. Then, the maximum of each permutation field is recorded and labeled as $max(S)$
+
+4. The permutation quantiles ($0.025, 0.975$) are calculated for each field and then, the *observed max(S)* is compared against this interval.
+
+## Results
+
+### Local Test
+
+**Precipitation, monthly**
+![maps/prec_month1.jpg](maps/prec_month1.jpg)
+![maps/prec_month2.jpg](maps/prec_month2.jpg)
+
+**Precipitation, yearly**
+![maps/prec_year1.jpg](maps/prec_month1.jpg)
+![maps/prec_year2.jpg](maps/prec_month2.jpg)
+
+**Temperature, monthly**
+![maps/temp_month1.jpg](maps/temp_month1.jpg)
+![maps/temp_month2.jpg](maps/temp_month2.jpg)
+
+**Temperature, yearly**
+![maps/temp_year1.jpg](maps/temp_month1.jpg)
+![maps/temp_year2.jpg](maps/temp_month2.jpg)
+
+### Global Test
+
+**Precipitation, monthly**
+```{r echo=FALSE}
+load("tab_global_month_prec.Rdata")
+tab_global_month_prec$trend <- c("+","+","+","+","+","+","+","+")
+kable(tab_global_month_prec)
+```
+
+**Precipitation, yearly**
+```{r echo=FALSE}
+load("tab_global_year_prec.Rdata")
+tab_global_year_prec$trend <- c("+","-","+","+","+","+","+","+","+","+")
+kable(tab_global_year_prec)
+```
+
+**Temperature, monthly**
+```{r echo=FALSE}
+load("tab_global_month_temp.Rdata")
+tab_global_month_temp$trend <- c("+","-","+","+","+","-","+","+","+")
+kable(tab_global_month_temp)
+```
+
+**Temperature, yearly**
+```{r echo=FALSE}
+load("tab_global_year_temp.Rdata")
+tab_global_year_temp$trend <- c("+","-","+","+","+","-","+","+","+")
+kable(tab_global_year_temp)
+```
