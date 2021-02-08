@@ -7,8 +7,12 @@
 rm(list=ls())
 source(file="0.packages.R")
 source(file="functions/get_maps.R")
-load("tab_local_month_prec.Rdata")
-load(file="data_prec_month.Rdata")
+load("data_proc/tab_local_month_prec.Rdata")
+load(file="data_proc/data_prec_month.Rdata")
+rm(datos_prec)
+load(file="data_proc/tab_trends_month_prec.Rdata")
+load(file="maps/plot_list_month_prec.Rdata")
+load(file="maps/heatmap_list_month_prec.Rdata")
 
 allin <- function(i){
 datos <- data.frame(tab_local_month_prec[[i]], latlonprec$latlon) 
@@ -19,13 +23,63 @@ get_maps(datos,i)
 
 map_list <- lapply(1:length(tab_local_month_prec),allin)
 
-jpeg("maps/prec_month1.jpg", width = 1200, height = 750)
-(map_list[[1]] | map_list[[2]]) /
-  (map_list[[3]] | map_list[[4]]) 
+tab <- tab_trends_month_prec %>% 
+  mutate(sign = ifelse(meanZ < 0, "-", "+")) %>% 
+  tableGrob(theme = ttheme_minimal(), rows = NULL)
+grid.arrange(tab)
+
+### Remove index 7 and 10
+### R99p ARE mostly ALL ZEROES. SDII has infinite.
+
+i<-10
+jpeg(paste0("maps/prec_month_index",i,".jpg"), width = 1200, height = 650)
+ # layout <- (map_list[[i]] + tab) / plot_list_month_prec[[i]]
+ #j <- i-1
+ # layout <- (map_list[[j]] + tab) / plot_list_month_prec[[i]]
+  layout <- (heatmap_list_month_prec[[i]]) / plot_list_month_prec[[i]]
+  layout + plot_annotation(
+    #title = paste('Results for Monthly Index',all[[j]]),
+    #title = paste("Results for Monthly Index R99p"),
+    title = paste("Results for Monthly Index SDII"),
+    subtitle = 'Time Series, Map with Local Significance and Global Significance',
+    caption = 'Data Source: CLIMDEX')
 dev.off()
-jpeg("maps/prec_month2.jpg", width = 1200, height = 750)
-(map_list[[5]] | map_list[[6]]) /
-  (map_list[[7]] | map_list[[8]])
+
+###################################
+####  PRECIPITATION yearLY  ######
+###################################
+
+## Data and packages
+rm(list=ls())
+source(file="0.packages.R")
+source(file="functions/get_maps.R")
+load("data_proc/tab_local_year_prec.Rdata")
+load(file="data_proc/data_prec_year.Rdata")
+rm(datos)
+load(file="data_proc/tab_trends_year_prec.Rdata")
+load(file="maps/plot_list_year_prec.Rdata")
+
+allin <- function(i){
+  datos <- data.frame(tab_local_year_prec[[i]], locations) 
+  names(datos) <- c("S", "P_025","P_975", "lat", "lon")
+  datos <- tibble(datos)
+  get_maps(datos,i)
+}
+
+map_list <- lapply(1:length(tab_local_year_prec),allin)
+
+tab <- tab_trends_year_prec %>% 
+  mutate(sign = ifelse(meanZ < 0, "-", "+")) %>% 
+  tableGrob(theme = ttheme_minimal(), rows = NULL)
+grid.arrange(tab)
+
+i<-10
+jpeg(paste0("maps/prec_year_index",i,".jpg"), width = 1200, height = 650)
+layout <- (map_list[[i]] + tab) / plot_list_year_prec[[i]]
+layout + plot_annotation(
+  title = paste('Results for Yearly Index',all[[i]]),
+  subtitle = 'Time Series, Map with Local Significance and Global Significance',
+  caption = 'Data Source: CLIMDEX')
 dev.off()
 
 ###################################
@@ -35,8 +89,12 @@ rm(list=ls())
 ## Data and packages
 source(file="0.packages.R")
 source(file="functions/get_maps.R")
-load("tab_local_month_temp.Rdata")
-load(file="data_temp_month.Rdata")
+load("data_proc/tab_local_month_temp.Rdata")
+load(file="data_proc/data_temp_month.Rdata")
+rm(datos_temp)
+load(file="data_proc/tab_trends_month_temp.Rdata")
+load(file="maps/plot_list_month_temp.Rdata")
+load(file="maps/heatmap_list_month_temp.Rdata")
 
 allin <- function(i){
   datos <- data.frame(tab_local_month_temp[[i]], latlontemp$latlon) 
@@ -48,42 +106,24 @@ allin <- function(i){
 
 map_list <- lapply(1:length(tab_local_month_temp),allin)
 
-jpeg("maps/temp_month1.jpg", width = 1200, height = 750)
-(map_list[[1]] | map_list[[2]]) /
-  (map_list[[3]] | map_list[[4]]) 
-dev.off()
-jpeg("maps/temp_month2.jpg", width = 1200, height = 750)
-(map_list[[5]] | map_list[[6]]) /
-  (map_list[[7]] | map_list[[8]])
-dev.off()
+tab <- tab_trends_month_temp %>% 
+  mutate(sign = ifelse(meanZ < 0, "-", "+")) %>% 
+  tableGrob(theme = ttheme_minimal(), rows = NULL)
+grid.arrange(tab)
 
-###################################
-####  PRECIPITATION yearLY  ######
-###################################
+### Remove index 1 
+## CSDI ARE mostly ALL ZEROES
 
-## Data and packages
-rm(list=ls())
-source(file="0.packages.R")
-source(file="functions/get_maps.R")
-load("tab_local_year_prec.Rdata")
-load(file="data_prec_year.Rdata")
-
-allin <- function(i){
-  datos <- data.frame(tab_local_year_prec[[i]], locations) 
-  names(datos) <- c("S", "P_025","P_975", "lat", "lon")
-  datos <- tibble(datos)
-  get_maps(datos,i)
-}
-
-map_list <- lapply(1:length(tab_local_year_prec),allin)
-
-jpeg("maps/prec_year1.jpg", width = 1200, height = 750)
-(map_list[[1]] | map_list[[2]]) /
-  (map_list[[3]] | map_list[[4]]) 
-dev.off()
-jpeg("maps/prec_year2.jpg", width = 1200, height = 750)
-(map_list[[5]] | map_list[[6]]) /
-  (map_list[[7]] | map_list[[8]])
+i<-10
+jpeg(paste0("maps/temp_month_index",i,".jpg"), width = 1200, height = 650)
+j <- i-1
+layout <- (map_list[[j]] + tab) / plot_list_month_temp[[i]]
+#layout <- (heatmap_list_month_temp[[i]]) / plot_list_month_temp[[i]]
+layout + plot_annotation(
+  title = paste('Results for Monthly Index',all[[j]]),
+  #title = paste("Results for Monthly Index CSDI"),
+  subtitle = 'Time Series, Map with Local Significance and Global Significance',
+  caption = 'Data Source: CLIMDEX')
 dev.off()
 
 ###################################
@@ -93,8 +133,11 @@ rm(list=ls())
 ## Data and packages
 source(file="0.packages.R")
 source(file="functions/get_maps.R")
-load("tab_local_year_temp.Rdata")
-load(file="data_temp_year.Rdata")
+load("data_proc/tab_local_year_temp.Rdata")
+load(file="data_proc/data_temp_year.Rdata")
+rm(datos)
+load(file="data_proc/tab_trends_year_temp.Rdata")
+load(file="maps/plot_list_year_temp.Rdata")
 
 allin <- function(i){
   datos <- data.frame(tab_local_year_temp[[i]], locations) 
@@ -106,14 +149,23 @@ allin <- function(i){
 
 map_list <- lapply(1:length(tab_local_year_temp),allin)
 
-jpeg("maps/temp_year1.jpg", width = 1200, height = 750)
-(map_list[[1]] | map_list[[2]]) /
-  (map_list[[3]] | map_list[[4]]) 
+tab <- tab_trends_year_temp %>% 
+  mutate(sign = ifelse(meanZ < 0, "-", "+")) %>% 
+  tableGrob(theme = ttheme_minimal(), rows = NULL)
+grid.arrange(tab)
+
+## CSDI, WSDI ARE ALL ZEROES.
+## Erase 1, 11
+
+i<-11
+jpeg(paste0("maps/temp_year_index",i,".jpg"), width = 1200, height = 650)
+j<- i-1
+#layout <- (map_list[[j]] + tab) / plot_list_year_temp[[i]]
+layout <- plot_list_year_temp[[i]]+tab
+layout + plot_annotation(
+  #title = paste("Results for Yearly Index CSDI"),
+  title = paste("Results for Yearly Index WSDI"),
+  #title = paste('Results for Yearly Index',all[[j]]),
+  subtitle = 'Time Series, Map with Local Significance and Global Significance',
+  caption = 'Data Source: CLIMDEX')
 dev.off()
-jpeg("maps/temp_year2.jpg", width = 1200, height = 750)
-(map_list[[5]] | map_list[[6]]) /
-  (map_list[[7]] | map_list[[8]])
-dev.off()
-
-
-

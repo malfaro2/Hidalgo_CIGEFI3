@@ -3,7 +3,7 @@ source(file="0.packages.R")
 source(file="functions/BPfunc_month.R")
 source(file="functions/get_plots.R")
 source(file="functions/heatmaps.R")
-load(file="data_prec_month.Rdata")
+load(file="data_proc/data_prec_month.Rdata")
 
 # Draw plots and calculate descriptive stats
 
@@ -52,24 +52,16 @@ dat <- datos_prec %>%
 units <- c("NA")
 plot_list <- colnames(dat)[4:13] %>% 
   map( ~ BPfunc_month(.x, units))
-plot_list[[4]]
 
-jpeg("maps/desc_prec_month1.jpg", width = 1200, height = 750)
-(plot_list[[1]] | plot_list[[2]]) /
-  (plot_list[[3]] | plot_list[[4]]) 
-dev.off()
-jpeg("maps/desc_prec_month2.jpg", width = 1200, height = 750)
-(plot_list[[5]] | plot_list[[6]]) /
-  (plot_list[[7]] | plot_list[[8]])
-dev.off()
-
-jpeg("maps/desc_prec_month3.jpg", width = 1200, height = 325)
-(plot_list[[9]] | plot_list[[10]]) 
-dev.off()
+plot_list_month_prec <- plot_list
+save(plot_list_month_prec, file="maps/plot_list_month_prec.Rdata")
 
 heatmap_list <- colnames(dat)[4:13] %>% 
   map( ~ heatmap_function(.x))
-heatmap_list[[4]]
+
+heatmap_list_month_prec <- heatmap_list
+save(heatmap_list_month_prec, file="maps/heatmap_list_month_prec.Rdata")
+
 
 ## R99p ARE mostly ALL ZEROES. SDII has infinite values and NAs
 dat <- dat %>% 
@@ -105,4 +97,6 @@ all <- unique(trends$variable);all
 i<-1
 get_plots(i)
 summary(trends %>% filter(variable==all[i]))
-trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))
+tab_trends_month_prec <- trends %>% 
+  group_by(variable) %>% summarize(meanZ=mean(Z))
+save(tab_trends_month_prec, file="data_proc/tab_trends_month_prec.Rdata")

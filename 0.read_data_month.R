@@ -58,7 +58,7 @@ datos_temp<- tibble("year" = rep(1:35,38*12),
                     "TXn"  = unlist(lapply(temp,function(x)x$TXn)), 
                     "TXx"  = unlist(lapply(temp,function(x)x$TXx)))
 
-save(datos_temp,latlontemp, file="data_temp_month.Rdata")
+save(datos_temp,latlontemp, file="data_proc/data_temp_month.Rdata")
 
 ## Create a tibble with all variables: 32*12*174 (years,months,stations)
 
@@ -76,5 +76,5 @@ datos_prec <- tibble("year" = rep(1:32,174*12),
                     "RX5day"  = unlist(lapply(prec,function(x)x$RX5day)), 
                     "SDII"  = unlist(lapply(prec,function(x)x$SDII)))
 
-save(datos_prec,latlonprec, file="data_prec_month.Rdata")
+save(datos_prec,latlonprec, file="data_proc/data_prec_month.Rdata")
 

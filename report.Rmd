@@ -15,25 +15,25 @@ library(knitr)
 This is a report that describes how to calculate the trend significance of each of the precipitation and temperature CLIMDEX indexes. The summary of the original data is the following:
 
 ```{r summary, echo=FALSE, message=FALSE, warning=FALSE}
-load("data_prec_month.Rdata")
+load("data_proc/data_prec_month.Rdata")
 SPM<-length(unique(datos_prec$station))
 IPM<-names(datos_prec)[-c(1:3)]
 rm(datos_prec)
 rm(latlonprec)
 
-load("data_temp_month.Rdata")
+load("data_proc/data_temp_month.Rdata")
 STM<-length(unique(datos_temp$station))
 ITM<-names(datos_temp)[-c(1:3)]
 rm(datos_temp)
 rm(latlontemp)
 
-load("data_prec_year.Rdata")
+load("data_proc/data_prec_year.Rdata")
 SPY<-length(unique(datos$station))
 IPY<-names(datos)[-c(1:2)]
 rm(datos)
 rm(locations)
 
-load("data_temp_year.Rdata")
+load("data_proc/data_temp_year.Rdata")
 STY<-length(unique(datos$station))
 ITY<-names(datos)[-c(1:2)]
 rm(datos)
@@ -67,32 +67,6 @@ knitr::kable(table)
   
 Source: [https://www.climdex.org/learn/](https://www.climdex.org/learn/)
 
-## Description of each index
-
-* **Precipitation - Monthly**
-
-![](maps/desc_prec_month1.jpg)
-![](maps/desc_prec_month2.jpg)
-![](maps/desc_prec_month3.jpg)
-  
-* **Precipitation - Yearly**
-
-![](maps/desc_prec_year1.jpg)
-![](maps/desc_prec_year2.jpg)
-![](maps/desc_prec_year3.jpg)
-
-* **Temperature - Monthly**
-
-![](maps/desc_temp_month1.jpg)
-![](maps/desc_temp_month2.jpg)
-![](maps/desc_temp_month3.jpg)
-
-* **Temperature - Yearly**
-
-![](maps/desc_temp_year1.jpg)
-![](maps/desc_temp_year2.jpg)
-![](maps/desc_temp_year3.jpg)
-
 ## Methods
 
 ### Local Test
@@ -121,50 +95,53 @@ Similarly, a permutation test was calculated using the maximum of the Mann Kenda
 
 ## Results
 
-### Local Test
-
 **Precipitation, monthly**
-![maps/prec_month1.jpg](maps/prec_month1.jpg)
-![maps/prec_month2.jpg](maps/prec_month2.jpg)
+
+![](maps/prec_month_index1.jpg)
+![](maps/prec_month_index2.jpg)
+![](maps/prec_month_index3.jpg)
+![](maps/prec_month_index4.jpg)
+![](maps/prec_month_index5.jpg)
+![](maps/prec_month_index6.jpg)
+![](maps/prec_month_index7.jpg)
+![](maps/prec_month_index8.jpg)
+![](maps/prec_month_index9.jpg)
+![](maps/prec_month_index10.jpg)
 
 **Precipitation, yearly**
-![maps/prec_year1.jpg](maps/prec_month1.jpg)
-![maps/prec_year2.jpg](maps/prec_month2.jpg)
+![](maps/prec_year_index1.jpg)
+![](maps/prec_year_index2.jpg)
+![](maps/prec_year_index3.jpg)
+![](maps/prec_year_index4.jpg)
+![](maps/prec_year_index5.jpg)
+![](maps/prec_year_index6.jpg)
+![](maps/prec_year_index7.jpg)
+![](maps/prec_year_index8.jpg)
+![](maps/prec_year_index9.jpg)
+![](maps/prec_year_index10.jpg)
 
 **Temperature, monthly**
-![maps/temp_month1.jpg](maps/temp_month1.jpg)
-![maps/temp_month2.jpg](maps/temp_month2.jpg)
+![](maps/temp_month_index1.jpg)
+![](maps/temp_month_index2.jpg)
+![](maps/temp_month_index3.jpg)
+![](maps/temp_month_index4.jpg)
+![](maps/temp_month_index5.jpg)
+![](maps/temp_month_index6.jpg)
+![](maps/temp_month_index7.jpg)
+![](maps/temp_month_index8.jpg)
+![](maps/temp_month_index9.jpg)
+![](maps/temp_month_index10.jpg)
 
 **Temperature, yearly**
-![maps/temp_year1.jpg](maps/temp_month1.jpg)
-![maps/temp_year2.jpg](maps/temp_month2.jpg)
+![](maps/temp_year_index1.jpg)
+![](maps/temp_year_index2.jpg)
+![](maps/temp_year_index3.jpg)
+![](maps/temp_year_index4.jpg)
+![](maps/temp_year_index5.jpg)
+![](maps/temp_year_index6.jpg)
+![](maps/temp_year_index7.jpg)
+![](maps/temp_year_index8.jpg)
+![](maps/temp_year_index9.jpg)
+![](maps/temp_year_index10.jpg)
+![](maps/temp_year_index11.jpg)
 
-### Global Test
-
-**Precipitation, monthly**
-```{r echo=FALSE}
-load("tab_global_month_prec.Rdata")
-tab_global_month_prec$trend <- c("+","+","+","+","+","+","+","+")
-kable(tab_global_month_prec)
-```
-
-**Precipitation, yearly**
-```{r echo=FALSE}
-load("tab_global_year_prec.Rdata")
-tab_global_year_prec$trend <- c("+","-","+","+","+","+","+","+","+","+")
-kable(tab_global_year_prec)
-```
-
-**Temperature, monthly**
-```{r echo=FALSE}
-load("tab_global_month_temp.Rdata")
-tab_global_month_temp$trend <- c("+","-","+","+","+","-","+","+","+")
-kable(tab_global_month_temp)
-```
-
-**Temperature, yearly**
-```{r echo=FALSE}
-load("tab_global_year_temp.Rdata")
-tab_global_year_temp$trend <- c("+","-","+","+","+","-","+","+","+")
-kable(tab_global_year_temp)
-```

@@ -2,7 +2,7 @@
 source(file="0.packages.R")
 source(file="functions/BPfunc_year.R")
 source(file="functions/get_plots.R")
-load(file="data_prec_year.Rdata")
+load(file="data_proc/data_prec_year.Rdata")
 
 # Draw plots and calculate descriptive stats
 
@@ -53,19 +53,9 @@ units <- list("days","days","mm","days","days",
               "mm","mm","mm","mm","mm/day")
 plot_list <- colnames(dat)[3:12] %>% 
   map( ~ BPfunc_year(.x, units))
-plot_list[[1]]
 
-jpeg("maps/desc_prec_year1.jpg", width = 1200, height = 750)
-(plot_list[[1]] | plot_list[[2]]) /
-  (plot_list[[3]] | plot_list[[4]]) 
-dev.off()
-jpeg("maps/desc_prec_year2.jpg", width = 1200, height = 750)
-(plot_list[[5]] | plot_list[[6]]) /
-  (plot_list[[7]] | plot_list[[8]])
-dev.off()
-jpeg("maps/desc_prec_year3.jpg", width = 1200, height = 325)
-(plot_list[[9]] | plot_list[[10]]) 
-dev.off()
+plot_list_year_prec <- plot_list
+save(plot_list_year_prec, file="maps/plot_list_year_prec.Rdata")
 
 ## Trends - Only calculates trends and correlation
 
@@ -97,4 +87,6 @@ all <- unique(trends$variable);all
 i<-4
 get_plots(i)
 summary(trends %>% filter(variable==all[i]))
-trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))
+tab_trends_year_prec <- trends %>% 
+  group_by(variable) %>% summarize(meanZ=mean(Z))
+save(tab_trends_year_prec, file="data_proc/tab_trends_year_prec.Rdata")

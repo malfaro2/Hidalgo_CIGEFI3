@@ -2,7 +2,7 @@
 source(file="0.packages.R")
 source(file="functions/BPfunc_year.R")
 source(file="functions/get_plots.R")
-load(file="data_temp_year.Rdata")
+load(file="data_proc/data_temp_year.Rdata")
 
 # Draw plots and calculate descriptive stats
 
@@ -54,19 +54,9 @@ units <- list("% days", "ºC", "% days", "% days", "ºC",
               "ºC", "% days", "% days", "ºC","ºC" ,"% days")
 plot_list <- colnames(dat)[3:13] %>% 
   map( ~ BPfunc_year(.x, units))
-plot_list[[3]]
 
-jpeg("maps/desc_temp_year1.jpg", width = 1200, height = 750)
-(plot_list[[1]] | plot_list[[2]]) /
-  (plot_list[[3]] | plot_list[[4]]) 
-dev.off()
-jpeg("maps/desc_temp_year2.jpg", width = 1200, height = 750)
-(plot_list[[5]] | plot_list[[6]]) /
-  (plot_list[[7]] | plot_list[[8]])
-dev.off()
-jpeg("maps/desc_temp_year3.jpg", width = 1200, height = 325)
-(plot_list[[9]] | plot_list[[10]]) 
-dev.off()
+plot_list_year_temp <- plot_list
+save(plot_list_year_temp, file="maps/plot_list_year_temp.Rdata")
 
 ## CSDI, WSDI ARE ALL ZEROES. TNx has an outlier
 dat <- dat %>% dplyr::select(-starts_with("WSDI"),-starts_with("CSDI"))
@@ -101,5 +91,7 @@ all <- unique(trends$variable);all
 i<-4
 get_plots(i)
 summary(trends %>% filter(variable==all[i]))
-trends %>% group_by(variable) %>% summarize(meanZ=mean(Z))
+tab_trends_year_temp <- trends %>% 
+  group_by(variable) %>% summarize(meanZ=mean(Z))
+save(tab_trends_year_temp, file="data_proc/tab_trends_year_temp.Rdata")
 

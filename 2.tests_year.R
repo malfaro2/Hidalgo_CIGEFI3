@@ -43,8 +43,8 @@ get.S <- function(k,v1,pp){
 # stati<-lapply(1:10,function(z){v1 <- all[z];print(v1);
 # (sapply(1:101,function(y){pp <- per[[y]];print(y);
 # ((sapply(1:174, function(x)get.S(x,v1,pp))))}))})
-# save(stati, file="quant_year_prec.Rdata")
-load(file="quant_year_prec.Rdata")
+# save(stati, file="data_proc/quant_year_prec.Rdata")
+load(file="data_proc/quant_year_prec.Rdata")
 
 ## a list of 10 variables, each with 174 Kendall S Scores,
 ## and the 2.5% and 97.5% percentiles of S for each location
@@ -65,8 +65,8 @@ global <- tibble(Var=all,Max.S = calc_max,
 tab_global_year_prec<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 
-save(tab_global_year_prec, file="tab_global_year_prec.Rdata")
-save(tab_local_year_prec, all, file="tab_local_year_prec.Rdata")
+save(tab_global_year_prec, file="data_proc/tab_global_year_prec.Rdata")
+save(tab_local_year_prec, all, file="data_proc/tab_local_year_prec.Rdata")
 
 ######################
 ###  TEMPERATURE  ####
@@ -110,8 +110,8 @@ get.S <- function(k,v1,pp){
 # stati<-lapply(1:9,function(z){v1 <- all[z];print(v1);
 # (sapply(1:101,function(y){pp <- per[[y]];print(y);
 # ((sapply(1:38, function(x)get.S(x,v1,pp))))}))})
-# save(stati, file="quant_year_temp.Rdata")
-load(file="quant_year_temp.Rdata")
+# save(stati, file="data_proc/quant_year_temp.Rdata")
+load(file="data_proc/quant_year_temp.Rdata")
 
 ## a list of 9 variables, each with 38 Kendall S Scores,
 ## and the 2.5% and 97.5% percentiles of S for each location
@@ -132,5 +132,5 @@ global <- tibble(Var=all,Max.S = calc_max,
 tab_global_year_temp<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 
-save(tab_global_year_temp, file="tab_global_year_temp.Rdata")
-save(tab_local_year_temp,all, file="tab_local_year_temp.Rdata")
+save(tab_global_year_temp, file="data_proc/tab_global_year_temp.Rdata")
+save(tab_local_year_temp,all, file="data_proc/tab_local_year_temp.Rdata")

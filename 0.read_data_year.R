@@ -46,7 +46,7 @@ datos<- tibble("year" = rep(1:32,174),
 
 locations <- dat[[11]]
 
-save(datos,locations, file="data_prec_year.Rdata")
+save(datos,locations, file="data_proc/data_prec_year.Rdata")
 
 
 dat <- readMat("datos_original/indices_temp_CA_1970_2004.mat")
@@ -78,5 +78,5 @@ datos<- tibble("year" = rep(1:35,38),
                "WSDI" = as.vector(dat[[11]]))
 locations <- dat[[12]]
 
-save(datos,locations, file="data_temp_year.Rdata")
+save(datos,locations, file="data_proc/data_temp_year.Rdata")
 
