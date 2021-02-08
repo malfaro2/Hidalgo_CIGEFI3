@@ -41,10 +41,13 @@ rm(locations)
 
 table <- rbind(c("Index Variable","Time Domain", 
          "Test", "N of indexes", "N stations"),
-       c("Precipitation", "Monthly", "Global and Local",length(IPM)-2,SPM),
+       c("Precipitation", "Monthly", "Global and Local",
+         paste(length(IPM),"(-2)"),SPM),
        c("Precipitation", "Yearly", "Global and Local",length(IPY),SPY),
-       c("Temperature", "Monthly", "Global and Local",length(ITM)-1,STM),
-       c("Temperature", "Yearly", "Global and Local",length(ITY)-2,STY))
+       c("Temperature", "Monthly", "Global and Local",
+         paste(length(ITM),"(-1)"),STM),
+       c("Temperature", "Yearly", "Global and Local",
+         paste(length(ITY),"(-2)"),STY))
 
 knitr::kable(table)
 
