@@ -48,7 +48,7 @@ Contents:
   
   * Temperature: CSDI (annual count of days with at least 6 consecutive days when TN < 10th percentile, 0s for all locations and years), DTR (Daily temperature range), TN10p (Percentage of days when TN < 10th percentile), TN90p (Percentage of days when TN > 90th percentile), TNn (Minimum value of daily minimum temperature), TNx (Minimum value of daily maximum temperature), TX10p (Percentage of days when TX < 10th percentile), TX90p (Percentage of days when TN > 90th percentile), TXn (Minimum value of daily maximum temperature), TXx (Maximum value of daily maximum temperature), WSDI (annual count of days with at least 6 consecutive days when TX > 90th percentile, 0s for all locations and years). 38 stations, 35 years (1970-2004), 11 indices
 
-[Results](reporte.html)
+[Results](report.html)
 
 Cite:
 If you find this code useful in your research, please, consider citing our paper: 
