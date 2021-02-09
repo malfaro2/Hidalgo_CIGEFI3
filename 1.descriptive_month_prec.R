@@ -23,7 +23,7 @@ names(datos_prec)
 dat <- datos_prec %>% 
   group_by(year,month,station) %>% 
   left_join(estaciones, by=c("station")) %>% 
-  group_by(station) %>% 
+  group_by(station, month) %>% 
   mutate(CDD.m = mean(CDD,na.rm=TRUE),
          CWD.m = mean(CWD,na.rm=TRUE),
          PRCTOT.m = mean(PRCTOT,na.rm=TRUE),
@@ -44,24 +44,24 @@ dat <- datos_prec %>%
          R99p.c = R99p - R99p.m,
          RX1day.c = RX1day - RX1day.m,
          RX5day.c = RX5day - RX5day.m,
-         SDII.c = SDII - SDII.m,
-         time = as.yearmon(paste0(year+1978,"-",month)) )
+         SDII.c = SDII - SDII.m)
+         
 
 ## Variable Description - Boxplots
 
 units <- c("NA")
+
+for(mm in 1:12){
 plot_list <- colnames(dat)[4:13] %>% 
-  map( ~ BPfunc_month(.x, units))
+  map( ~ BPfunc_month(.x, units,mm))
+save(plot_list, file=paste0("maps/plot_list_month",mm,"_prec.Rdata"))
+}
 
-plot_list_month_prec <- plot_list
-save(plot_list_month_prec, file="maps/plot_list_month_prec.Rdata")
-
+for(mm in 1:12){
 heatmap_list <- colnames(dat)[4:13] %>% 
-  map( ~ heatmap_function(.x))
-
-heatmap_list_month_prec <- heatmap_list
-save(heatmap_list_month_prec, file="maps/heatmap_list_month_prec.Rdata")
-
+  map( ~ heatmap_function(.x,mm))
+save(heatmap_list, file=paste0("maps/heatmap_list_month",mm,"_prec.Rdata"))
+}
 
 ## R99p ARE mostly ALL ZEROES. SDII has infinite values and NAs
 dat <- dat %>% 
@@ -76,12 +76,12 @@ pMK  <- function(var){as.numeric(MannKendall(ts(var))$sl)}
 
 summary(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
-  dplyr::select(station, time, ends_with(".c")) %>% 
+  dplyr::select(station, year,month, ends_with(".c")) %>% 
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
-  arrange(time) %>% 
-  group_by(station, variable) %>% 
+  arrange(year) %>% 
+  group_by(station, variable,month) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
             varSMK = cMKv(value),
@@ -94,9 +94,10 @@ trends <- dat %>%
 ## Describe trends:
 
 all <- unique(trends$variable);all
-i<-1
-get_plots(i)
+i<-1;m<-1
+get_plots(i,m)
 summary(trends %>% filter(variable==all[i]))
 tab_trends_month_prec <- trends %>% 
-  group_by(variable) %>% summarize(meanZ=mean(Z))
+  group_by(variable, month) %>% summarize(meanZ=mean(Z)) %>% 
+  pivot_wider(names_from=variable, values_from=meanZ)
 save(tab_trends_month_prec, file="data_proc/tab_trends_month_prec.Rdata")

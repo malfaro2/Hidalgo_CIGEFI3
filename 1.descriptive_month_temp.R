@@ -23,7 +23,7 @@ names(datos_temp)
 dat <- datos_temp %>% 
   group_by(year,month,station) %>% 
   left_join(estaciones, by=c("station")) %>% 
-  group_by(station) %>% 
+  group_by(station, month) %>% 
   mutate(CSDI.m = mean(CSDI,na.rm=TRUE),
          DTR.m = mean(DTR,na.rm=TRUE),
          TN10p.m = mean(TN10p,na.rm=TRUE),
@@ -44,23 +44,22 @@ dat <- datos_temp %>%
          TX10p.c =  TX10p - TX10p.m,
          TX90p.c =  TX90p - TX90p.m,
          TXn.c = TXn - TXn.m,
-         TXx.c = TXx - TXx.m,
-         time = as.yearmon(paste0(year+1978,"-",month)) )
+         TXx.c = TXx - TXx.m) 
 
 ## Variable Description - Boxplots
 
 units <- c("NA")
-plot_list <- colnames(dat)[4:13] %>% 
-  map( ~ BPfunc_month(.x, units))
+for(mm in 1:12){
+  plot_list <- colnames(dat)[4:13] %>% 
+    map( ~ BPfunc_month(.x, units,mm))
+  save(plot_list, file=paste0("maps/plot_list_month",mm,"_temp.Rdata"))
+}
 
-plot_list_month_temp <- plot_list
-save(plot_list_month_temp, file="maps/plot_list_month_temp.Rdata")
-
-heatmap_list <- colnames(dat)[4:13] %>% 
-  map( ~ heatmap_function(.x))
-
-heatmap_list_month_temp <- heatmap_list
-save(heatmap_list_month_temp, file="maps/heatmap_list_month_temp.Rdata")
+for(mm in 1:12){
+  heatmap_list <- colnames(dat)[4:13] %>% 
+    map( ~ heatmap_function(.x,mm))
+  save(heatmap_list, file=paste0("maps/heatmap_list_month",mm,"_temp.Rdata"))
+}
 
 ## CSDI ARE mostly ALL ZEROES. TXx has an outlier
 dat <- dat %>% dplyr::select(-starts_with("CSDI"))
@@ -74,12 +73,12 @@ pMK  <- function(var){as.numeric(MannKendall(ts(var))$sl)}
 
 summary(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
-  dplyr::select(station, time, ends_with(".c")) %>% 
+  dplyr::select(station, year,month, ends_with(".c")) %>% 
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 
-  arrange(time) %>% 
-  group_by(station, variable) %>% 
+  arrange(year) %>% 
+  group_by(station, variable,month) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
             varSMK = cMKv(value),
@@ -92,9 +91,10 @@ trends <- dat %>%
 ## Describe trends:
 
 all <- unique(trends$variable);all
-i<-1
-get_plots(i)
+i<-1;m<-1
+get_plots(i,m)
 summary(trends %>% filter(variable==all[i]))
 tab_trends_month_temp <- trends %>% 
-  group_by(variable) %>% summarize(meanZ=mean(Z))
+  group_by(variable, month) %>% summarize(meanZ=mean(Z)) %>% 
+  pivot_wider(names_from=variable, values_from=meanZ)
 save(tab_trends_month_temp, file="data_proc/tab_trends_month_temp.Rdata")

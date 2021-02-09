@@ -1,9 +1,9 @@
-heatmap_function <- function(.x_var){
+heatmap_function <- function(.x_var,m){
   x_var <- sym(.x_var)
   col1 = "#fee8c8" 
   col2 = "#e34a33"
-  a <- dat %>%
-    ggplot(aes(x=time, y = station, fill=!! x_var)) +
+  a <- dat %>%  filter(month==m) %>% 
+    ggplot(aes(x=year, y = station, fill=!! x_var)) +
     geom_tile(aes(fill = !! x_var), na.rm = TRUE) +
     scale_fill_gradient(low = col1, high = col2) +  
     guides(fill=guide_legend(title=paste(x_var))) +

@@ -1,5 +1,5 @@
-get_plots<-function(i){
-  a<-trends %>% dplyr::filter(variable==all[i]) %>% 
+get_plots<-function(i,m){
+  a<-trends %>% dplyr::filter(variable==all[i], month==m) %>% 
     full_join(estaciones, .id = "station") %>% 
     ggplot(aes(lon, lat)) +
     geom_sf(data = map1, inherit.aes = FALSE) +
@@ -15,7 +15,7 @@ get_plots<-function(i){
     labs(title = paste("Central America: tau and p",all[i]), 
          x = "Lon", y = "Lat") 
   
-  b<-trends %>% dplyr::filter(variable==all[i]) %>%  
+  b<-trends %>% dplyr::filter(variable==all[i], month==m) %>%  
     full_join(estaciones, .id = "station") %>% 
     ggplot(aes(lon, lat)) +
     geom_sf(data = map1, inherit.aes = FALSE) +

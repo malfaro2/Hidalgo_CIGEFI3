@@ -9,7 +9,7 @@ source(file="1.descriptive_month_prec.R")
 # https://climatedataguide.ucar.edu/climate-data-tools-and-analysis/trend-analysis
 # https://link.springer.com/article/10.1007/s10651-020-00446-4
 
-TL <- max(dat$year)*max(dat$month)
+TL <- max(dat$year)
 set.seed(1818)
 per <- lapply(1:100,function(i)sample(1:TL,TL,replace=FALSE))
 per[[101]] <- 1:TL
@@ -29,21 +29,23 @@ hist(trends$r)
 # k = 1 #174 total stations
 # v1 = "CDD.c" # 8 indexes in total
 # pp = it's the permuted set, 101 is the real one.
-get.S <- function(k,v1,pp){
-  r   <- (trends %>% filter(station==k,variable==v1))$r
-  var <- (datos %>% filter(station==k,variable==v1) %>% 
-    arrange(year,month))$value[pp]
+get.S <- function(k,v1,pp,mm){
+  r   <- (trends %>% filter(station==k,variable==v1,month==mm))$r
+  var <- (datos %>% filter(station==k,variable==v1, month==mm) %>% 
+    arrange(year))$value[pp]
   Y   <- var - r*c(0,var[-1])
   return(cMKs(Y))
 }
 
+## ********** llegué hasta aquí corrigiendo, debe haber una forma de hacer esto con map
 ## value 101 is the real value
 ## caution! it takes a while
-#stati is a list of 8 variables, each w/ matrix(0,174,101)
-# stati<-lapply(1:8,function(z){v1 <- all[z];print(v1);
-# (sapply(1:101,function(y){pp <- per[[y]];print(y);
-# ((sapply(1:174, function(x)get.S(x,v1,pp))))}))})
-# save(stati, file="data_proc/quant_month_prec.Rdata")
+#stati is a list of 8 variables, each a list of 12 months, each w/ matrix(0,174,101)
+stati<-lapply(1:8,function(z){v1 <- all[z];print(v1);
+lapply(1:12,function(w){#months
+(sapply(1:101,function(y){pp <- per[[y]];print(y);
+((sapply(1:174, function(x)get.S(x,v1,pp,w))))}))})})
+save(stati, file="data_proc/quant_month_prec.Rdata")
 load(file="data_proc/quant_month_prec.Rdata")
 
 ## a list of 8 variables, each with 174 Kendall S Scores,
