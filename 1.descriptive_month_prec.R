@@ -47,7 +47,7 @@ dat <- datos_prec %>%
          SDII.c = SDII - SDII.m)
          
 
-## Variable Description - Boxplots
+## Variable Description - Boxplots and Heatmaps
 
 units <- c("NA")
 
@@ -81,7 +81,7 @@ trends <- dat %>%
                names_to = "variable", 
                values_to = "value") %>% 
   arrange(year) %>% 
-  group_by(station, variable,month) %>% 
+  group_by(station,variable,month) %>% 
   summarize(tauMK = cMKt(value),
             SMK = cMKs(value),
             varSMK = cMKv(value),

@@ -88,10 +88,11 @@ trends <- dat %>%
             n = length(value),
             r = cor(value[-n],value[-1]))
 
-## Describe trends:
+## Describe trends per station, variable and month:
 
 all <- unique(trends$variable);all
-i<-1;m<-1
+i<-1 #variable
+m<-1 #month
 get_plots(i,m)
 summary(trends %>% filter(variable==all[i]))
 tab_trends_month_temp <- trends %>% 
