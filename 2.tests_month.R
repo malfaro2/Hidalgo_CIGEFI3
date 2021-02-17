@@ -37,14 +37,14 @@ get.S <- function(k,v1,pp,mm){
   return(cMKs(Y))
 }
 
-## value 101 is the real value
-## caution! it takes a while
-#stati is a list of 8 variables, each a list of 12 months, each w/ matrix(0,174,101)
-stati<-lapply(1:8,function(z){v1 <- all[z];print(v1);
-lapply(1:12,function(w){#months
-(sapply(1:101,function(y){pp <- per[[y]];print(y);
-((sapply(1:174, function(x)get.S(x,v1,pp,w))))}))})})
-save(stati, file="data_proc/quant_month_prec.Rdata")
+# ## value 101 is the real value
+# ## caution! it takes a while
+# #stati is a list of 8 variables, each a list of 12 months, each w/ matrix(0,174,101)
+# stati<-lapply(1:8,function(z){v1 <- all[z];print(v1);
+# lapply(1:12,function(w){#months
+# (sapply(1:101,function(y){pp <- per[[y]];print(y);
+# ((sapply(1:174, function(x)get.S(x,v1,pp,w))))}))})})
+# save(stati, file="data_proc/quant_month_prec.Rdata")
 load(file="data_proc/quant_month_prec.Rdata")
 
 ## a list of 8 variables, each with 174 Kendall S Scores,
@@ -55,7 +55,7 @@ for(i in 1:12){
       apply(stati[[x]][[i]],1,function(y)quantile(y,probs=0.025)),
       apply(stati[[x]][[i]],1,function(y)quantile(y,probs=0.975)))})
  save(tab_local_month_prec,all, 
-      file=print0("data_proc/tab_local_month",i,"_prec.Rdata")) 
+      file=paste0("data_proc/tab_local_month",i,"_prec.Rdata")) 
 }
 
 ## a list of 8 variables, each with one max Kendall Scores,
@@ -70,7 +70,7 @@ global <- tibble(Var=all,Max.S = calc_max,
 tab_global_month_prec<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 save(tab_global_month_prec, 
-     file=print0("data_proc/tab_global_month",i,"_prec.Rdata"))
+     file=paste0("data_proc/tab_global_month",i,"_prec.Rdata"))
 }
 ######################
 ####  TEMPERATURE ####
@@ -121,7 +121,7 @@ tab_local_month_temp <-lapply(1:9,function(x){cbind(stati[[x]][[i]][,101],
         apply(stati[[x]][[i]],1,function(y)quantile(y,probs=0.025)),
         apply(stati[[x]][[i]],1,function(y)quantile(y,probs=0.975)))})
 save(tab_local_month_temp,all, 
-     file=print0("data_proc/tab_local_month",i,"_temp.Rdata"))
+     file=paste0("data_proc/tab_local_month",i,"_temp.Rdata"))
 }
 
 ## a list of 9 variables, each with one max Kendall Scores,
@@ -136,7 +136,7 @@ global <- tibble(Var=all,Max.S = calc_max,
 tab_global_month_temp<-global %>% 
   mutate(signif = P97.5-Max.S < 0)
 save(tab_global_month_temp, 
-     file=print0("data_proc/tab_global_month",i,"_temp.Rdata"))
+     file=paste0("data_proc/tab_global_month",i,"_temp.Rdata"))
 }
 
 
