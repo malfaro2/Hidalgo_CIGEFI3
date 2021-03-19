@@ -102,29 +102,29 @@ Similarly, a permutation test was calculated using the maximum of the Mann Kenda
 
 **Precipitation, yearly**
 
-![](maps/prec_year_index1.jpg)
-![](maps/prec_year_index2.jpg)
-![](maps/prec_year_index3.jpg)
-![](maps/prec_year_index4.jpg)
-![](maps/prec_year_index5.jpg)
-![](maps/prec_year_index6.jpg)
-![](maps/prec_year_index7.jpg)
-![](maps/prec_year_index8.jpg)
-![](maps/prec_year_index9.jpg)
-![](maps/prec_year_index10.jpg)
+![](maps_prec_year_panel/prec_year_index1.png)
+![](maps_prec_year_panel/prec_year_index2.png)
+![](maps_prec_year_panel/prec_year_index3.png)
+![](maps_prec_year_panel/prec_year_index4.png)
+![](maps_prec_year_panel/prec_year_index5.png)
+![](maps_prec_year_panel/prec_year_index6.png)
+![](maps_prec_year_panel/prec_year_index7.png)
+![](maps_prec_year_panel/prec_year_index8.png)
+![](maps_prec_year_panel/prec_year_index9.png)
+
+![](maps_prec_year_panel/prec_year_index10.png)
 
 **Temperature, yearly**
-![](maps/temp_year_index1.jpg)
-![](maps/temp_year_index2.jpg)
-![](maps/temp_year_index3.jpg)
-![](maps/temp_year_index4.jpg)
-![](maps/temp_year_index5.jpg)
-![](maps/temp_year_index6.jpg)
-![](maps/temp_year_index7.jpg)
-![](maps/temp_year_index8.jpg)
-![](maps/temp_year_index9.jpg)
-![](maps/temp_year_index10.jpg)
-![](maps/temp_year_index11.jpg)
+![](maps_temp_year_panel/temp_year_index2.png)
+![](maps_temp_year_panel/temp_year_index3.png)
+![](maps_temp_year_panel/temp_year_index4.png)
+![](maps_temp_year_panel/temp_year_index5.png)
+![](maps_temp_year_panel/temp_year_index6.png)
+![](maps_temp_year_panel/temp_year_index7.png)
+![](maps_temp_year_panel/temp_year_index8.png)
+![](maps_temp_year_panel/temp_year_index9.png)
+![](maps_temp_year_panel/temp_year_index10.png)
+
 
 ### Global Test
 
