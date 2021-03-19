@@ -20,7 +20,7 @@ selectInput('time', 'Choose a time domain:',c("Yearly"="year",
                                               "September"="sep",
                                               "October"="oct",
                                               "November"="nov",
-                                              "December"="dec"))),
+                                              "December"="dic"))),
 mainPanel(
 # Use imageOutput to place the image on the page
 imageOutput("myImage")
