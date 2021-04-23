@@ -64,9 +64,9 @@ knitr::kable(table)
 # print(IPY)
 ```
 
-  * **Precipitation**:  CDD (consecutive dry days), CWD (consecutive wet days), PRCPTOT (annual total PRCP in wet days in mm), R10mm (number of heavy precipitation days), R20mm (number of very heavy precipitation days), R95p (very wet days in mm), R99p (extremely wet days in mm, a lot of 0s), RX1day (max 1-day precipitation amount in mm), RX5day (max 5-day precipitation amount in mm), SDII (simple daily intensity index in mm/day a lot of 0s). 32 years (1979-2010), 10 indices.
+  * **Precipitation**:  CDD (consecutive dry days), CWD (consecutive wet days), PRCPTOT (annual total PRCP in wet days), R10mm (number of heavy precipitation days), R20mm (number of very heavy precipitation days), R95p (very wet days in mm), R99p (extremely wet days in mm, a lot of 0s), RX1day (max 1-day precipitation amount in mm), RX5day (max 5-day precipitation amount in mm), SDII (simple daily intensity index in mm/day a lot of 0s). 32 years (1979-2010), 10 indices.
   
-  * **Temperature**:  CSDI (annual count of days with at least 6 consecutive days when TN < 10th percentile, 0s for all locations and years),  DTR (Daily temperature range), TN10p (Percentage of days when TN < 10th percentile), TN90p (Percentage of days when TN > 90th percentile), TNn (Minimum value of daily minimum temperature), TNx (Minimum value of daily maximum temperature), TX10p (Percentage of days when TX < 10th percentile), TX90p (Percentage of days when TN > 90th percentile), TXn (Minimum value of daily maximum temperature), TXx (Maximum value of daily maximum temperature), WSDI (annual count of days with at least 6 consecutive days when TX > 90th percentile, 0s for all locations and years). 35 years (1970-2004), 11 indices
+  * **Temperature**:  CSDI (annual count of days with at least 6 consecutive days when TN < 10th percentile, 0s for all locations and years),  DTR (Daily temperature range), TN10p (Percentage of days when TN < 10th percentile), TN90p (Percentage of days when TN > 90th percentile), TNn (Minimum value of daily minimum temperature), TNx (Maximum value of daily minimum temperature), TX10p (Percentage of days when TX < 10th percentile), TX90p (Percentage of days when TN > 90th percentile), TXn (Minimum value of daily maximum temperature), TXx (Maximum value of daily maximum temperature), WSDI (annual count of days with at least 6 consecutive days when TX > 90th percentile, 0s for all locations and years). 35 years (1970-2004), 11 indices
   
 Source: [https://www.climdex.org/learn/](https://www.climdex.org/learn/)
 
@@ -98,31 +98,49 @@ Similarly, a permutation test was calculated using the maximum of the Mann Kenda
 
 ## Results
 
-### Local Test
-
+### Local Tests
 **Precipitation, yearly**
 
+CDD (consecutive dry days)
 ![](maps_prec_year_panel/prec_year_index1.png)
+CWD (consecutive wet days)
 ![](maps_prec_year_panel/prec_year_index2.png)
+PRCPTOT (annual total PRCP in wet days)
 ![](maps_prec_year_panel/prec_year_index3.png)
+R10mm (number of heavy precipitation days)
 ![](maps_prec_year_panel/prec_year_index4.png)
+R20mm (number of very heavy precipitation days)
 ![](maps_prec_year_panel/prec_year_index5.png)
+R95p (very wet days in mm) 
 ![](maps_prec_year_panel/prec_year_index6.png)
+R99p (extremely wet days in mm, a lot of 0s)  
 ![](maps_prec_year_panel/prec_year_index7.png)
+RX1day (max 1-day precipitation amount in mm) 
 ![](maps_prec_year_panel/prec_year_index8.png)
+RX5day (max 5-day precipitation amount in mm)  
 ![](maps_prec_year_panel/prec_year_index9.png)
-
+SDII (simple daily intensity index in mm/day) 
 ![](maps_prec_year_panel/prec_year_index10.png)
-
+  
 **Temperature, yearly**
+
+DTR (Daily temperature range)  
 ![](maps_temp_year_panel/temp_year_index2.png)
+TN10p (Percentage of days when TN < 10th percentile)  
 ![](maps_temp_year_panel/temp_year_index3.png)
+TN90p (Percentage of days when TN > 90th percentile)
 ![](maps_temp_year_panel/temp_year_index4.png)
+TNn (Minimum value of daily minimum temperature)
 ![](maps_temp_year_panel/temp_year_index5.png)
+TNx (Minimum value of daily maximum temperature)
 ![](maps_temp_year_panel/temp_year_index6.png)
+TX10p (Percentage of days when TX < 10th percentile)
 ![](maps_temp_year_panel/temp_year_index7.png)
+TX90p (Percentage of days when TN > 90th percentile)
 ![](maps_temp_year_panel/temp_year_index8.png)
+TXn (Minimum value of daily maximum temperature)
 ![](maps_temp_year_panel/temp_year_index9.png)
+TXx (Maximum value of daily maximum temperature)
 ![](maps_temp_year_panel/temp_year_index10.png)
 
 
