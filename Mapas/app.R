@@ -9,18 +9,11 @@ ui <- pageWithSidebar(
                selected = c("prec"="prec"),inline=FALSE),
 selectInput('index', 'Choose an index:',1:10),
 selectInput('time', 'Choose a time domain:',c("Yearly"="year", 
-                                              "January"="jan",
-                                              "February"="feb",
-                                              "March"="mar",
-                                              "April"="apr",
-                                              "May"="may",
-                                              "June"="jun",
-                                              "July"="jul",
-                                              "August"="aug",
-                                              "September"="sep",
-                                              "October"="oct",
-                                              "November"="nov",
-                                              "December"="dic"))),
+                                              "Bimonthly: Dec - Jan - Feb" = "DJF",
+                                              "Bimonthly: Mar - Apr" = "MA",
+                                              "Bimonthly: May - Jun" = "MJ",
+                                              "Bimonthly: Jul - Aug" = "JA",
+                                              "Bimonthly: Sept - Oct" = "SO"))),
 mainPanel(
 # Use imageOutput to place the image on the page
 imageOutput("myImage")
@@ -29,8 +22,8 @@ imageOutput("myImage")
 
 server <- function(input, output, session) {
     output$myImage <- renderImage({
-        if(input$time=="year"){filename=paste0("imgs/",input$variable,"_year_index",input$index,".png")}
-        else{filename=paste0("imgs/",input$variable,"_month_index",
+        if(input$time=="year"){filename=paste0("imgs2/",input$variable,"_year_index",input$index,".png")}
+        else{filename=paste0("imgs2/",input$variable,"_bimonth_index",
                     input$index,"_",input$time,".png")}
         
         filename <- normalizePath(filename)
