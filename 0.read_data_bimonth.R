@@ -3,11 +3,11 @@ source("0.packages.R")
 ####################### TEMPERATURE INDEX #################################
 
 dat <- list()
-for(i in 1:12){
-  dat[[i]]<- readMat(paste0("datos_original/index_temp/mes",i,".mat"))
+for(i in 1:5){
+  dat[[i]]<- readMat(paste0("datos_original/index_bimonth_temp/periodo",i,".mat"))
 }
 
-latlontemp <- readMat("datos_original/index_temp/latlon.mat")
+latlontemp <- readMat("datos_original/index_bimonth_temp/latlon.mat")
 temp <- dat
 
 # 38 stations, 1970-2004, 10 index
@@ -24,11 +24,11 @@ dim(temp[[2]][[4]])#years x stations
 ####################### PRECIPITATION INDEX #################################
 
 dat <- list()
-for(i in 1:12){
-  dat[[i]]<- readMat(paste0("datos_original/index_prec/mes",i,".mat"))
+for(i in 1:5){
+  dat[[i]]<- readMat(paste0("datos_original/index_bimonth_prec/periodo",i,".mat"))
 }
 
-latlonprec <- readMat("datos_original/index_prec/latlon.mat")
+latlonprec <- readMat("datos_original/index_bimonth_prec/latlon.mat")
 prec <- dat
 # 174 stations, 1979-2010, 10 index
 # 32 years x 12 meses
@@ -42,13 +42,11 @@ dim(prec[[2]][[4]])#years x stations
 
 ############################ CREATE TABLES ################################
 
-## Create a tibble with all variables: 35*12*38 (years,months,stations)
+## Create a tibble with all variables: 35*5*38 (years,bimonths,stations)
 
-datos_temp<- tibble("year" = rep(1:35,38*12),
-                    "station"  = rep(rep(1:38,each=35),12),
-                    "month" = rep(rep(1:12,each=35),each=38),
-                    "bimonth" = rep(rep(c(1,1,2,2,3,3,4,4,5,5,6,7),
-                                      each=35),each=38),
+datos_temp<- tibble("year" = rep(1:35,38*5),
+                    "station"  = rep(rep(1:38,each=35),5),
+                    "bimonth" = rep(rep(1:5,each=35),each=38),
                     "CSDI"  = unlist(lapply(temp,function(x)x$CSDI)), 
                     "DTR"  = unlist(lapply(temp,function(x)x$DTR)), 
                     "TN10p"  = unlist(lapply(temp,function(x)x$TN10p)), 
@@ -64,11 +62,9 @@ save(datos_temp,latlontemp, file="data_proc/data_temp_bimonth.Rdata")
 
 ## Create a tibble with all variables: 32*12*174 (years,months,stations)
 
-datos_prec <- tibble("year" = rep(1:32,174*12),
-                    "station"  = rep(rep(1:174,each=32),12),
-                    "month" = rep(rep(1:12,each=32),each=174),
-                    "bimonth" = rep(rep(c(1,1,2,2,3,3,4,4,5,5,6,7),
-                                        each=32),each=174),
+datos_prec <- tibble("year" = rep(1:32,174*5),
+                    "station"  = rep(rep(1:174,each=32),5),
+                    "bimonth" = rep(rep(1:5,each=32),each=174),
                     "CDD"  = unlist(lapply(prec,function(x)x$CDD)), 
                     "CWD"  = unlist(lapply(prec,function(x)x$CWD)), 
                     "PRCTOT"  = unlist(lapply(prec,function(x)x$PRCPTOT)), 
