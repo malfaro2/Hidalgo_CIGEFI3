@@ -1,8 +1,8 @@
 ## Data, functions and packages
 source(file="0.packages.R")
-source(file="functions/BPfunc_month.R")
-source(file="functions/get_plots.R")
-source(file="functions/heatmaps.R")
+source(file="functions/BPfunc_bimonth.R")
+source(file="functions/get_plots_bimonth.R")
+source(file="functions/heatmaps_bimonth.R")
 load(file="data_proc/data_prec_bimonth.Rdata")
 
 # Draw plots and calculate descriptive stats
@@ -23,7 +23,7 @@ names(datos_prec)
 dat <- datos_prec %>% 
   group_by(year,bimonth,station) %>% 
   left_join(estaciones, by=c("station")) %>% 
-  group_by(station, month) %>% 
+  group_by(station, bimonth) %>% 
   mutate(CDD.m = mean(CDD,na.rm=TRUE),
          CWD.m = mean(CWD,na.rm=TRUE),
          PRCTOT.m = mean(PRCTOT,na.rm=TRUE),
@@ -51,16 +51,16 @@ dat <- datos_prec %>%
 
 units <- c("NA")
 
-for(mm in 1:12){
+for(mm in 1:5){
 plot_list <- colnames(dat)[4:13] %>% 
-  map( ~ BPfunc_month(.x, units,mm))
+  map( ~ BPfunc_bimonth(.x, units,mm))
 save(plot_list, file=paste0("maps/plot_list_bimonth",mm,"_prec.Rdata"))
 }
 
-for(mm in 1:12){
+for(mm in 1:5){
 heatmap_list <- colnames(dat)[4:13] %>% 
   map( ~ heatmap_function(.x,mm))
-save(heatmap_list, file=paste0("maps/heatmap_list_month",mm,"_prec.Rdata"))
+save(heatmap_list, file=paste0("maps/heatmap_list_bimonth",mm,"_prec.Rdata"))
 }
 
 ## R99p ARE mostly ALL ZEROES. SDII has infinite values and NAs
@@ -76,7 +76,7 @@ pMK  <- function(var){as.numeric(MannKendall(ts(var))$sl)}
 
 summary(dat) # transform into station, year, CDD.c ... SDII.c
 trends <- dat %>% 
-  dplyr::select(station, year,bimonth, ends_with(".c")) %>% 
+  dplyr::select(station,year,bimonth, ends_with(".c")) %>% 
   pivot_longer(cols= ends_with(".c"),
                names_to = "variable", 
                values_to = "value") %>% 

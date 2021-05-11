@@ -47,6 +47,8 @@ dim(prec[[2]][[4]])#years x stations
 datos_temp<- tibble("year" = rep(1:35,38*12),
                     "station"  = rep(rep(1:38,each=35),12),
                     "month" = rep(rep(1:12,each=35),each=38),
+                    "bimonth" = rep(rep(c(1,1,2,2,3,3,)
+                      ,each=35),each=38),
                     "CSDI"  = unlist(lapply(temp,function(x)x$CSDI)), 
                     "DTR"  = unlist(lapply(temp,function(x)x$DTR)), 
                     "TN10p"  = unlist(lapply(temp,function(x)x$TN10p)), 
